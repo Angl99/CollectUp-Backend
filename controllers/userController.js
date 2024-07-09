@@ -19,19 +19,20 @@ const index = async (req, res) => {
 const create = async (req, res) => {
     const created_at = new Date().toISOString();
     const {
-        first_name,
-        last_name,
-        date_of_birth,
+        firstName,
+        lastName,
+        dateOfBirth,
         email,
     } = req.body;
+    console.log(req.body)
     try {
         const newUser = await prisma.user.create({
             data: {
                 created_at,
-                first_name,
-                last_name,
-                date_of_birth,
-                email,
+                first_name: firstName,
+                last_name: lastName,
+                date_of_birth: dateOfBirth,
+                email: email,
             }
         })
         res.status(201).json(newUser)
@@ -68,7 +69,12 @@ const getById = async (req, res) => {
 
 const updateById = async (req, res) => {
     const { id } = req.params;
-    let { email, ...updateData } = req.body; // Destructure email from update data
+    let { 
+        firstName,
+        lastName,
+        dateOfBirth,
+        email,
+     } = req.body; // Destructure email from update data
 
     try {
         // If email is being updated, check its uniqueness first
@@ -82,15 +88,17 @@ const updateById = async (req, res) => {
             if (existingUser && existingUser.id !== parseInt(id)) {
                 return res.status(400).send({ message: 'Email address is already in use by another account.' });
             }
-
-            // Add email back to updateData if it's unique
-            updateData.email = email;
         }
 
         // Proceed with the update
         const updatedUser = await prisma.user.update({
             where: { id: parseInt(id) },
-            data: updateData,
+            data: {
+                first_name: firstName,
+                last_name: lastName,
+                date_of_birth: dateOfBirth,
+                email: email,
+            },
         });
 
         res.json(updatedUser);
