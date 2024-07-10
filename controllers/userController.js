@@ -21,7 +21,6 @@ const create = async (req, res) => {
     const {
         firstName,
         lastName,
-        dateOfBirth,
         email,
     } = req.body;
     console.log(req.body)
@@ -31,7 +30,6 @@ const create = async (req, res) => {
                 created_at,
                 first_name: firstName,
                 last_name: lastName,
-                date_of_birth: dateOfBirth,
                 email: email,
             }
         })

@@ -17,7 +17,6 @@ model User {
   id               Int      @id @default(autoincrement())
   first_name       String
   last_name        String
-  date_of_birth    DateTime
   created_at       DateTime @default(now())
   email            String   @unique
 }
