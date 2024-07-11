@@ -14,9 +14,67 @@ datasource db {
 }
 
 model User {
-  id               Int      @id @default(autoincrement())
-  first_name       String
-  last_name        String
-  created_at       DateTime @default(now())
-  email            String   @unique
+  id         Int       @id @default(autoincrement())
+  first_name String
+  last_name  String
+  created_at DateTime  @default(now())
+  email      String    @unique
+  showcase   Showcase?
+  items      Item[]
+  Product    Product[]
+}
+
+model Item {
+  id           Int          @id @default(autoincrement())
+  data         Json
+  userId       Int
+  collectionId Int?
+  user         User         @relation(fields: [userId], references: [id])
+  collection   Collection?  @relation(fields: [collectionId], references: [id])
+  series       ItemSeries[]
+  Showcase     Showcase?    @relation(fields: [showcaseId], references: [id])
+  showcaseId   Int?
+  Product      Product[]
+}
+
+model Showcase {
+  id          Int          @id @default(autoincrement())
+  name        String
+  userId      Int          @unique
+  collections Collection[]
+  items       Item[]
+  user        User         @relation(fields: [userId], references: [id])
+}
+
+model Collection {
+  id         Int       @id @default(autoincrement())
+  name       String
+  items      Item[]
+  showcase   Showcase? @relation(fields: [showcaseId], references: [id])
+  showcaseId Int?
+}
+
+model Series {
+  id    Int          @id @default(autoincrement())
+  name  String
+  items ItemSeries[]
+}
+
+// Join Table for Many-to-Many relationships (for ex. collaboration items)
+model ItemSeries {
+  itemId   Int
+  seriesId Int
+  item     Item   @relation(fields: [itemId], references: [id])
+  Series   Series @relation(fields: [seriesId], references: [id])
+
+  @@id([itemId, seriesId])
+}
+
+model Product {
+  id     Int   @id @default(autoincrement())
+  itemId Int
+  userId Int
+  price  Float
+  item   Item  @relation(fields: [itemId], references: [id])
+  user   User  @relation(fields: [userId], references: [id])
 }
