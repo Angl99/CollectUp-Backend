@@ -22,6 +22,7 @@ const create = async (req, res) => {
         firstName,
         lastName,
         email,
+        uid
     } = req.body;
     console.log(req.body)
     try {
@@ -31,6 +32,7 @@ const create = async (req, res) => {
                 first_name: firstName,
                 last_name: lastName,
                 email: email,
+                uid: uid
             }
         })
         res.status(201).json(newUser)
