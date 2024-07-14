@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const { getUserByUid } = require('../helpers/userHelper');
 const prisma = new PrismaClient();
 
 const getAllItems = async (req, res) => {
@@ -49,17 +50,18 @@ const searchItem = async (req, res) => {
 };
 
 const createItem = async (req, res) => {
-  const { userId } = req.params;
+  const { uid } = req.body;
 
-  if (!userId) {
-    return res.status(400).json({ error: 'User ID is missing from the request parameters' });
+  if (!uid) {
+    return res.status(400).json({ error: 'Uid is missing from the request parameters' });
   }
-
+  const userUid = await getUserByUid(uid);
+  delete req.body.uid;
   try {
     const newItem = await prisma.item.create({
       data: {
         user: {
-          connect: { id: parseInt(userId) },
+          connect: { id: parseInt(userUid.id) },
         },
         data: req.body,
       },
