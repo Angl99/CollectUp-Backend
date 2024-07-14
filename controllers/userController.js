@@ -94,7 +94,6 @@ const updateById = async (req, res) => {
             data: {
                 first_name: firstName,
                 last_name: lastName,
-                date_of_birth: dateOfBirth,
                 email: email,
             },
         });
