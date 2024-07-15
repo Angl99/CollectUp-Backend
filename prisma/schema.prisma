@@ -13,6 +13,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Add brand table
+
 model User {
   id         Int       @id @default(autoincrement())
   uid        String    @unique
@@ -38,6 +40,7 @@ model Item {
   Product      Product[]
 }
 
+// Showcase is only for individual users
 model Showcase {
   id          Int          @id @default(autoincrement())
   name        String
@@ -47,6 +50,7 @@ model Showcase {
   user        User         @relation(fields: [userId], references: [id])
 }
 
+// collections are only related to other items (eg. All demon slayer funko pop figues in a single collection)
 model Collection {
   id         Int       @id @default(autoincrement())
   name       String
@@ -55,6 +59,7 @@ model Collection {
   showcaseId Int?
 }
 
+// Series data pertains to particular items (eg. Berserk, DemonSlayer, Naruto)
 model Series {
   id    Int          @id @default(autoincrement())
   name  String
