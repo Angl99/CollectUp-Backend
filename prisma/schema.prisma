@@ -22,12 +22,12 @@ model User {
   email      String    @unique
   showcase   Showcase?
   items      Item[]
-  Product    Product[]
 }
 
+
+// User should not own an item 
 model Item {
   id           Int          @id @default(autoincrement())
-  data         Json
   userId       Int
   collectionId Int?
   user         User         @relation(fields: [userId], references: [id])
@@ -35,7 +35,8 @@ model Item {
   series       ItemSeries[]
   Showcase     Showcase?    @relation(fields: [showcaseId], references: [id])
   showcaseId   Int?
-  Product      Product[]
+  productId    Int
+  Product      Product      @relation(fields: [productId], references: [id])
 }
 
 model Showcase {
@@ -72,10 +73,10 @@ model ItemSeries {
 }
 
 model Product {
-  id     Int   @id @default(autoincrement())
-  itemId Int
-  userId Int
-  price  Float
-  item   Item  @relation(fields: [itemId], references: [id])
-  user   User  @relation(fields: [userId], references: [id])
+  id     Int   @id 
+  upc    Int?  
+  isbn   Int?
+  ean    Int
+  data   Json
+  items  Item[]
 }

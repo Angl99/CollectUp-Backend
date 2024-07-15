@@ -15,7 +15,7 @@ const itemRouter = require('./routes/itemRoute');
 
 app.use("/users", userRouter);
 app.use('/items', itemRouter);
-// app.use('/showcases', showcaseRouter);
+app.use('/showcases', showcaseRouter);
 // app.use('/collections', collectionRouter);
 // app.use('/series', seriesRouter);
 // app.use('/products', productRouter);
