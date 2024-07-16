@@ -10,10 +10,10 @@ app.get('/', (req, res) => {
 
 const userRouter = require("./routes/userRoute");
 const itemRouter = require('./routes/itemRoute');
-const showcaseRouter = require('./routes/showcaseRoute');
+const showcaseRouter = require('./routes/showcaseRoutes');
 // const collectionRouter = require('./routes/collectionRoute');
 // const seriesRouter = require('./routes/seriesRoute');
-// const productRouter = require('./routes/productRoute');
+const productRouter = require('./routes/productRoutes');
 
 
 app.use("/users", userRouter);
@@ -21,6 +21,6 @@ app.use('/items', itemRouter);
 app.use('/showcases', showcaseRouter);
 // app.use('/collections', collectionRouter);
 // app.use('/series', seriesRouter);
-// app.use('/products', productRouter);
+app.use('/products', productRouter);
 
 module.exports = app;

@@ -59,6 +59,7 @@ const productController = {
       });
       res.json(updatedProduct);
     } catch (error) {
+        console.log(error);
       res.status(500).json({ error: 'Failed to update product' });
     }
   },
@@ -70,7 +71,7 @@ const productController = {
       await prisma.product.delete({
         where: { ean: ean },
       });
-      res.status(204).end();
+      res.status(200).json({ message: 'Product deleted!'});
     } catch (error) {
       res.status(500).json({ error: 'Failed to delete product' });
     }
