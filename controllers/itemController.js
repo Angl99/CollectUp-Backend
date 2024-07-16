@@ -12,22 +12,6 @@ const getAllItems = async (req, res) => {
   }
 };
 
-// const getItemById = async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const item = await prisma.item.findUnique({
-//       where: { id: parseInt(id) },
-//     });
-//     if (!item) {
-//       return res.status(404).json({ error: 'Item not found' });
-//     }
-//     res.json(item);
-//   } catch (error) {
-//     console.error('Error fetching item:', error);
-//     res.status(500).json({ error: 'Failed to fetch item' });
-//   }
-// };
-
 const searchItem = async (req, res) => {
   const { code, type } = req.query;
   try {
