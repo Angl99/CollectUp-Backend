@@ -78,10 +78,9 @@ model ItemSeries {
 }
 
 model Product {
-  id     Int   @id 
+  ean    Int   @id
   upc    Int?  
   isbn   Int?
-  ean    Int
   data   Json
   items  Item[]
 }

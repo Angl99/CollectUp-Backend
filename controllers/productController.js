@@ -15,10 +15,9 @@ const productController = {
   // Create a new product
   create: async (req, res) => {
     try {
-      const { id, upc, isbn, ean, data } = req.body;
+      const { upc, isbn, ean, data } = req.body;
       const newProduct = await prisma.product.create({
         data: {
-          id,
           upc,
           isbn,
           ean,
@@ -31,12 +30,12 @@ const productController = {
     }
   },
 
-  // Get a specific product by ID
-  getById: async (req, res) => {
+  // Get a specific product by EAN
+  getByEan: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { ean } = req.params;
       const product = await prisma.product.findUnique({
-        where: { id: parseInt(id, 10) },
+        where: { ean: parseInt(ean, 10) },
       });
       if (product) {
         res.json(product);
@@ -48,14 +47,14 @@ const productController = {
     }
   },
 
-  // Update a product by ID
-  updateById: async (req, res) => {
+  // Update a product by EAN
+  updateByEan: async (req, res) => {
     try {
-      const { id } = req.params;
-      const { upc, isbn, ean, data } = req.body;
+      const { ean } = req.params;
+      const { upc, isbn, data } = req.body;
       const updatedProduct = await prisma.product.update({
-        where: { id: parseInt(id, 10) },
-        data: { upc, isbn, ean, data },
+        where: { ean: parseInt(ean, 10) },
+        data: { upc, isbn, data },
       });
       res.json(updatedProduct);
     } catch (error) {
@@ -63,12 +62,12 @@ const productController = {
     }
   },
 
-  // Delete a product by ID
-  deleteById: async (req, res) => {
+  // Delete a product by EAN
+  deleteByEan: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { ean } = req.params;
       await prisma.product.delete({
-        where: { id: parseInt(id, 10) },
+        where: { ean: parseInt(ean, 10) },
       });
       res.status(204).end();
     } catch (error) {

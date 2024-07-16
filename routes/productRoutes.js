@@ -6,10 +6,10 @@ productRouter.get("/", productController.index);
 
 productRouter.post("/", productController.create);
 
-productRouter.get("/:id", productController.getById);
+productRouter.get("/:ean", productController.getByEan);
 
-productRouter.put("/:id", productController.updateById);
+productRouter.put("/:ean", productController.updateByEan);
 
-productRouter.delete("/:id", productController.deleteById);
+productRouter.delete("/:ean", productController.deleteByEan);
 
 module.exports = productRouter;
