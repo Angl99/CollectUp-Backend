@@ -37,8 +37,8 @@ model Item {
   series       ItemSeries[]
   Showcase     Showcase?    @relation(fields: [showcaseId], references: [id])
   showcaseId   Int?
-  productId    Int
-  Product      Product      @relation(fields: [productId], references: [id])
+  productEan   Int
+  Product      Product      @relation(fields: [productEan], references: [ean])
 }
 
 // Showcase is only for individual users
