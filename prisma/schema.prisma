@@ -37,7 +37,7 @@ model Item {
   series       ItemSeries[]
   Showcase     Showcase?    @relation(fields: [showcaseId], references: [id])
   showcaseId   Int?
-  productEan   Int
+  productEan   String
   Product      Product      @relation(fields: [productEan], references: [ean])
 }
 
@@ -78,9 +78,9 @@ model ItemSeries {
 }
 
 model Product {
-  ean    Int   @id
-  upc    Int?  
-  isbn   Int?
+  ean    String   @id
+  upc    String?  
+  isbn   String?
   data   Json
   items  Item[]
 }

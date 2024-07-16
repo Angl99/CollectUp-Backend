@@ -36,7 +36,7 @@ const productController = {
     try {
       const { ean } = req.params;
       const product = await prisma.product.findUnique({
-        where: { ean: parseInt(ean, 10) },
+        where: { ean: ean },
       });
       if (product) {
         res.json(product);
@@ -54,7 +54,7 @@ const productController = {
       const { ean } = req.params;
       const { upc, isbn, data } = req.body;
       const updatedProduct = await prisma.product.update({
-        where: { ean: parseInt(ean, 10) },
+        where: { ean: ean },
         data: { upc, isbn, data },
       });
       res.json(updatedProduct);
@@ -68,7 +68,7 @@ const productController = {
     try {
       const { ean } = req.params;
       await prisma.product.delete({
-        where: { ean: parseInt(ean, 10) },
+        where: { ean: ean },
       });
       res.status(204).end();
     } catch (error) {
