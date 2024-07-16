@@ -92,7 +92,6 @@ const deleteItemById = async (req, res) => {
 
 module.exports = {
   getAllItems,
-  // getItemById
   searchItem,
   createItem,
   updateItemById,
