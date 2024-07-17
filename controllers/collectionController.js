@@ -12,6 +12,26 @@ const collectionController = {
     }
   },
 
+  // Add an item to a collection
+  addItem: async (req, res) => {
+    try {
+      const { collectionId, itemId } = req.body;
+      const updatedCollection = await prisma.collection.update({
+        where: { id: parseInt(collectionId) },
+        data: {
+          items: {
+            connect: { id: parseInt(itemId) }
+          }
+        },
+        include: { items: true }
+      });
+      res.json(updatedCollection);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Failed to add item to collection' });
+    }
+  },
+
   // Create a new collection
   create: async (req, res) => {
     try {

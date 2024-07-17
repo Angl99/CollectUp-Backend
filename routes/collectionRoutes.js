@@ -12,4 +12,7 @@ collectionRouter.put("/:id", collectionController.updateById);
 
 collectionRouter.delete("/:id", collectionController.deleteById);
 
+// Add an item to a collection
+collectionRouter.post("/add-item", collectionController.addItem);
+
 module.exports = collectionRouter;
