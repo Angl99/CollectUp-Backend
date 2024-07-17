@@ -34,20 +34,17 @@ const searchItem = async (req, res) => {
 };
 
 const createItem = async (req, res) => {
-  const { uid } = req.body;
+  const { userId, productEan } = req.body;
 
-  if (!uid) {
-    return res.status(400).json({ error: 'Uid is missing from the request parameters' });
+  if (!userId || !productEan) {
+    return res.status(400).json({ error: 'UserId and productEan are required' });
   }
-  const userUid = await getUserByUid(uid);
-  delete req.body.uid;
+
   try {
     const newItem = await prisma.item.create({
       data: {
-        user: {
-          connect: { id: parseInt(userUid.id) },
-        },
-        data: req.body,
+        userId: parseInt(userId),
+        productEan: productEan,
       },
     });
     res.status(201).json(newItem);

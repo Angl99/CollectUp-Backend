@@ -134,7 +134,10 @@ describe('Collection Controller', () => {
         userId: user1.id,
         productEan: product.ean
       });
-      console.log(itemResponse.body);
+
+    expect(itemResponse.status).toBe(201);
+    expect(itemResponse.body.userId).toBe(user1.id);
+    expect(itemResponse.body.productEan).toBe(product.ean);
 
     const addItemResponse = await request(app)
       .post('/collections/add-item')
