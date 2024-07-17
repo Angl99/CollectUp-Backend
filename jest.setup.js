@@ -1,8 +1,12 @@
 require('dotenv').config({ path: './.env.test' });
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { execSync } = require('child_process');
 
 beforeAll(async () => {
+  console.log('Initializing test database...');
+  execSync('node scripts/initTestDb.js', { stdio: 'inherit' });
+  console.log('Test database initialized.');
   await prisma.productSeries.deleteMany();
   await prisma.series.deleteMany();
   await prisma.item.deleteMany();
