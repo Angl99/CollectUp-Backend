@@ -134,6 +134,7 @@ describe('Collection Controller', () => {
         userId: user1.id,
         productEan: product.ean
       });
+      console.log(itemResponse.body);
 
     const addItemResponse = await request(app)
       .post('/collections/add-item')
