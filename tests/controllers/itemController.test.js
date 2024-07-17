@@ -10,8 +10,8 @@ describe('Item Controller', () => {
   beforeAll(async () => {
     testUser = await prisma.user.create({
       data: {
-        firstName: 'Test',
-        lastName: 'User',
+        first_name: 'Test',
+        last_name: 'User',
         email: 'testuser@example.com',
         uid: 'test-uid-123',
       },
@@ -73,13 +73,11 @@ describe('Item Controller', () => {
     const response = await request(app)
       .put(`/items/${item.id}`)
       .send({
-        name: 'Updated Item',
-        description: 'Updated Description',
+        productEan: 'updated-ean-456',
       });
 
     expect(response.status).toBe(200);
-    expect(response.body.name).toBe('Updated Item');
-    expect(response.body.description).toBe('Updated Description');
+    expect(response.body.productEan).toBe('updated-ean-456');
   });
 
   test('should delete an item', async () => {

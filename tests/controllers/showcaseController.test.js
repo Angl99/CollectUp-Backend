@@ -9,8 +9,8 @@ describe('Showcase Controller', () => {
   beforeAll(async () => {
     testUser = await prisma.user.create({
       data: {
-        firstName: 'Test',
-        lastName: 'User',
+        first_name: 'Test',
+        last_name: 'User',
         email: 'testuser@example.com',
         uid: 'test-uid-123',
       },
@@ -83,10 +83,17 @@ describe('Showcase Controller', () => {
       },
     });
 
+    const product = await prisma.product.create({
+      data: {
+        ean: 'test-ean-123',
+        data: {},
+      },
+    });
+
     const item = await prisma.item.create({
       data: {
         userId: testUser.id,
-        productEan: 'test-ean-123',
+        productEan: product.ean,
       },
     });
 
@@ -124,10 +131,17 @@ describe('Showcase Controller', () => {
       },
     });
 
+    const product = await prisma.product.create({
+      data: {
+        ean: 'test-ean-456',
+        data: {},
+      },
+    });
+
     const item = await prisma.item.create({
       data: {
         userId: testUser.id,
-        productEan: 'test-ean-123',
+        productEan: product.ean,
         showcaseId: showcase.id,
       },
     });
