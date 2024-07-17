@@ -24,6 +24,14 @@ const showcaseController = {
         return res.status(404).json({ error: 'User not found' });
       }
 
+      const existingShowcase = await prisma.showcase.findUnique({
+        where: { userId: user.id },
+      });
+
+      if (existingShowcase) {
+        return res.status(400).json({ error: 'User already has a showcase' });
+      }
+
       const newShowcase = await prisma.showcase.create({
         data: { name, userId: user.id },
       });

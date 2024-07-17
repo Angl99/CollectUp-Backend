@@ -12,8 +12,8 @@ describe('Collection Controller', () => {
     await prisma.user.deleteMany();
     await prisma.product.deleteMany();
 
-    // Create a user
-    user = await prisma.user.create({
+    // Create users
+    user1 = await prisma.user.create({
       data: {
         uid: 'testuser123',
         first_name: 'Test',
@@ -22,18 +22,27 @@ describe('Collection Controller', () => {
       },
     });
 
+    user2 = await prisma.user.create({
+      data: {
+        uid: 'testuser456',
+        first_name: 'Another',
+        last_name: 'User',
+        email: 'anotheruser@example.com',
+      },
+    });
+
     // Create showcases
     showcase1 = await prisma.showcase.create({
       data: {
         name: 'Test Showcase 1',
-        user: { connect: { id: user.id } },
+        user: { connect: { id: user1.id } },
       },
     });
 
     showcase2 = await prisma.showcase.create({
       data: {
         name: 'Test Showcase 2',
-        user: { connect: { id: user.id } },
+        user: { connect: { id: user2.id } },
       },
     });
 
