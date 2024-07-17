@@ -34,7 +34,6 @@ model Item {
   collectionId Int?
   user         User         @relation(fields: [userId], references: [id])
   collection   Collection?  @relation(fields: [collectionId], references: [id])
-  series       ItemSeries[]
   Showcase     Showcase?    @relation(fields: [showcaseId], references: [id])
   showcaseId   Int?
   productEan   String
@@ -60,28 +59,29 @@ model Collection {
   showcaseId Int?
 }
 
-// Series data pertains to particular items (eg. Berserk, DemonSlayer, Naruto)
+// Series data pertains to particular products (eg. Berserk, DemonSlayer, Naruto)
 model Series {
-  id    Int          @id @default(autoincrement())
-  name  String
-  items ItemSeries[]
+  id       Int             @id @default(autoincrement())
+  name     String
+  products ProductSeries[]
 }
 
-// Join Table for Many-to-Many relationships (for ex. collaboration items)
-model ItemSeries {
-  itemId   Int
-  seriesId Int
-  item     Item   @relation(fields: [itemId], references: [id])
-  Series   Series @relation(fields: [seriesId], references: [id])
+// Join Table for Many-to-Many relationships (for ex. collaboration products)
+model ProductSeries {
+  productEan String
+  seriesId   Int
+  product    Product @relation(fields: [productEan], references: [ean])
+  series     Series  @relation(fields: [seriesId], references: [id])
 
-  @@id([itemId, seriesId])
+  @@id([productEan, seriesId])
 }
 
 //User doesn't own a Product
 model Product {
-  ean    String   @id
-  upc    String?  
-  isbn   String?
-  data   Json
-  items  Item[]
+  ean     String          @id
+  upc     String?  
+  isbn    String?
+  data    Json
+  items   Item[]
+  series  ProductSeries[]
 }
