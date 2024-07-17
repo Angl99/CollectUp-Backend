@@ -46,10 +46,10 @@ describe('Collection Controller', () => {
       },
     });
 
-    // Create a product
+    // Create a product with a unique EAN
     product = await prisma.product.create({
       data: {
-        ean: '1234567890123',
+        ean: `1234567890123${Date.now()}`, // Append timestamp to ensure uniqueness
         upc: '123456789012',
         isbn: '1234567890',
         data: { name: 'Test Product', description: 'This is a test product' },
