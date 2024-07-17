@@ -16,13 +16,13 @@ datasource db {
 // Add brand table
 
 model User {
-  id         Int       @id @default(autoincrement())
-  uid        String    @unique
+  id         Int        @id @default(autoincrement())
+  uid        String     @unique
   first_name String
   last_name  String
-  created_at DateTime  @default(now())
-  email      String    @unique
-  showcase   Showcase?
+  created_at DateTime   @default(now())
+  email      String     @unique
+  showcases  Showcase[]
   items      Item[]
 }
 
@@ -41,11 +41,11 @@ model Item {
   Product      Product      @relation(fields: [productEan], references: [ean])
 }
 
-// Showcase is only for individual users
+// Showcase can be for multiple users
 model Showcase {
   id          Int          @id @default(autoincrement())
   name        String
-  userId      Int          @unique
+  userId      Int
   collections Collection[]
   items       Item[]
   user        User         @relation(fields: [userId], references: [id])
