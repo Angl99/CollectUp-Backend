@@ -4,11 +4,55 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('Collection Controller', () => {
+  let showcase1, showcase2, user, product;
+
   beforeAll(async () => {
-    await prisma.collection.deleteMany(); // Clear the database before running tests
+    await prisma.collection.deleteMany();
+    await prisma.showcase.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.product.deleteMany();
+
+    // Create a user
+    user = await prisma.user.create({
+      data: {
+        uid: 'testuser123',
+        first_name: 'Test',
+        last_name: 'User',
+        email: 'testuser@example.com',
+      },
+    });
+
+    // Create showcases
+    showcase1 = await prisma.showcase.create({
+      data: {
+        name: 'Test Showcase 1',
+        userId: user.id,
+      },
+    });
+
+    showcase2 = await prisma.showcase.create({
+      data: {
+        name: 'Test Showcase 2',
+        userId: user.id,
+      },
+    });
+
+    // Create a product
+    product = await prisma.product.create({
+      data: {
+        ean: '1234567890123',
+        upc: '123456789012',
+        isbn: '1234567890',
+        data: { name: 'Test Product', description: 'This is a test product' },
+      },
+    });
   });
 
   afterAll(async () => {
+    await prisma.collection.deleteMany();
+    await prisma.showcase.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.product.deleteMany();
     await prisma.$disconnect();
   });
 
@@ -17,7 +61,7 @@ describe('Collection Controller', () => {
       .post('/collections')
       .send({
         name: 'Test Collection',
-        showcaseId: 1 // Assuming a showcase with id 1 exists
+        showcaseId: showcase1.id
       });
 
     expect(response.status).toBe(201);
@@ -36,7 +80,7 @@ describe('Collection Controller', () => {
       .post('/collections')
       .send({
         name: 'Fetch Test Collection',
-        showcaseId: 1
+        showcaseId: showcase1.id
       });
 
     const fetchResponse = await request(app).get(`/collections/${createResponse.body.id}`);
@@ -49,14 +93,14 @@ describe('Collection Controller', () => {
       .post('/collections')
       .send({
         name: 'Update Test Collection',
-        showcaseId: 1
+        showcaseId: showcase1.id
       });
 
     const updateResponse = await request(app)
       .put(`/collections/${createResponse.body.id}`)
       .send({
         name: 'Updated Collection Name',
-        showcaseId: 2 // Assuming a showcase with id 2 exists
+        showcaseId: showcase2.id
       });
 
     expect(updateResponse.status).toBe(200);
@@ -68,7 +112,7 @@ describe('Collection Controller', () => {
       .post('/collections')
       .send({
         name: 'Delete Test Collection',
-        showcaseId: 1
+        showcaseId: showcase1.id
       });
 
     const deleteResponse = await request(app).delete(`/collections/${createResponse.body.id}`);
@@ -81,14 +125,14 @@ describe('Collection Controller', () => {
       .post('/collections')
       .send({
         name: 'Add Item Test Collection',
-        showcaseId: 1
+        showcaseId: showcase1.id
       });
 
     const itemResponse = await request(app)
-      .post('/items') // Assuming there's an endpoint to create items
+      .post('/items')
       .send({
-        userId: 1, // Assuming a user with id 1 exists
-        productEan: '1234567890123' // Assuming a product with this EAN exists
+        userId: user.id,
+        productEan: product.ean
       });
 
     const addItemResponse = await request(app)
