@@ -33,17 +33,24 @@ const searchItem = async (req, res) => {
   }
 };
 
-const createItem = async (req, res) => {
-  const { userId, productEan } = req.body;
+const { getUserByUid } = require('../helpers/userHelper');
 
-  if (!userId || !productEan) {
-    return res.status(400).json({ error: 'UserId and productEan are required' });
+const createItem = async (req, res) => {
+  const { uid, productEan } = req.body;
+
+  if (!uid || !productEan) {
+    return res.status(400).json({ error: 'Firebase UID and productEan are required' });
   }
 
   try {
+    const user = await getUserByUid(uid);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
     const newItem = await prisma.item.create({
       data: {
-        userId: parseInt(userId),
+        userId: user.id,
         productEan: productEan,
       },
     });

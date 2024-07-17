@@ -131,7 +131,7 @@ describe('Collection Controller', () => {
     const itemResponse = await request(app)
       .post('/items')
       .send({
-        userId: user1.id,
+        uid: user1.uid,
         productEan: product.ean
       });
 
