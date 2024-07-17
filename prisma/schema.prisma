@@ -27,7 +27,7 @@ model User {
 }
 
 
-// User should not own an item 
+// User should own an item 
 model Item {
   id           Int          @id @default(autoincrement())
   userId       Int
@@ -77,6 +77,7 @@ model ItemSeries {
   @@id([itemId, seriesId])
 }
 
+//User doesn't own a Product
 model Product {
   ean    String   @id
   upc    String?  
