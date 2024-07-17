@@ -26,14 +26,14 @@ describe('Collection Controller', () => {
     showcase1 = await prisma.showcase.create({
       data: {
         name: 'Test Showcase 1',
-        userId: user.id,
+        user: { connect: { id: user.id } },
       },
     });
 
     showcase2 = await prisma.showcase.create({
       data: {
         name: 'Test Showcase 2',
-        userId: user.id,
+        user: { connect: { id: user.id } },
       },
     });
 
