@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 beforeAll(async () => {
   await prisma.productSeries.deleteMany();
   await prisma.series.deleteMany();
+  await prisma.item.deleteMany();
   await prisma.collection.deleteMany();
   await prisma.showcase.deleteMany();
   await prisma.user.deleteMany();
