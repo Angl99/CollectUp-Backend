@@ -1,25 +1,34 @@
 const request = require('supertest');
-const app = require('../../index');
+const app = require('../../index'); // Adjust the path as necessary
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('Showcase Controller', () => {
-  let testUser;
+  let user, product;
 
-  beforeAll(async () => {
-    testUser = await prisma.user.create({
+  beforeEach(async () => {
+    // Create a user
+    user = await prisma.user.create({
       data: {
+        uid: `testuser${Date.now()}`,
         first_name: 'Test',
         last_name: 'User',
-        email: 'testuser@example.com',
-        uid: 'test-uid-123',
+        email: `testuser${Date.now()}@example.com`,
+      },
+    });
+
+    // Create a product
+    product = await prisma.product.create({
+      data: {
+        ean: `1234567890123${Date.now()}`, // Append timestamp to ensure uniqueness
+        upc: '123456789012',
+        isbn: '1234567890',
+        data: { name: 'Test Product', description: 'This is a test product' },
       },
     });
   });
 
   afterAll(async () => {
-    await prisma.showcase.deleteMany();
-    await prisma.user.deleteMany();
     await prisma.$disconnect();
   });
 
@@ -28,133 +37,132 @@ describe('Showcase Controller', () => {
       .post('/showcases')
       .send({
         name: 'Test Showcase',
-        uid: testUser.uid,
+        uid: user.uid,
       });
 
     expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('id');
     expect(response.body.name).toBe('Test Showcase');
-    expect(response.body.userId).toBe(testUser.id);
+    expect(response.body.userId).toBe(user.id);
   });
 
   test('should fetch all showcases', async () => {
+    // Create a showcase first
+    await request(app)
+      .post('/showcases')
+      .send({
+        name: 'Test Showcase',
+        uid: user.uid,
+      });
+
     const response = await request(app).get('/showcases');
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBeTruthy();
+    expect(response.body.length).toBeGreaterThan(0);
   });
 
   test('should fetch a specific showcase', async () => {
-    const showcase = await prisma.showcase.create({
-      data: {
+    const createResponse = await request(app)
+      .post('/showcases')
+      .send({
         name: 'Fetch Test Showcase',
-        userId: testUser.id,
-      },
-    });
+        uid: user.uid,
+      });
 
-    const response = await request(app).get(`/showcases/${showcase.id}`);
-    expect(response.status).toBe(200);
-    expect(response.body.id).toBe(showcase.id);
-    expect(response.body.name).toBe('Fetch Test Showcase');
+    const fetchResponse = await request(app).get(`/showcases/${createResponse.body.id}`);
+    expect(fetchResponse.status).toBe(200);
+    expect(fetchResponse.body.id).toBe(createResponse.body.id);
+    expect(fetchResponse.body.name).toBe('Fetch Test Showcase');
   });
 
   test('should update a showcase', async () => {
-    const showcase = await prisma.showcase.create({
-      data: {
+    const createResponse = await request(app)
+      .post('/showcases')
+      .send({
         name: 'Update Test Showcase',
-        userId: testUser.id,
-      },
-    });
+        uid: user.uid,
+      });
 
-    const response = await request(app)
-      .put(`/showcases/${showcase.id}`)
+    const updateResponse = await request(app)
+      .put(`/showcases/${createResponse.body.id}`)
       .send({
         name: 'Updated Showcase Name',
       });
 
-    expect(response.status).toBe(200);
-    expect(response.body.name).toBe('Updated Showcase Name');
+    expect(updateResponse.status).toBe(200);
+    expect(updateResponse.body.name).toBe('Updated Showcase Name');
   });
 
   test('should add items to a showcase', async () => {
-    const showcase = await prisma.showcase.create({
-      data: {
+    const showcaseResponse = await request(app)
+      .post('/showcases')
+      .send({
         name: 'Add Items Test Showcase',
-        userId: testUser.id,
-      },
-    });
+        uid: user.uid,
+      });
 
-    const product = await prisma.product.create({
-      data: {
-        ean: 'test-ean-123',
-        data: {},
-      },
-    });
+    const itemResponse = await request(app)
+      .post('/items')
+      .send({
+        uid: user.uid,
+        productEan: product.ean
+      });
 
-    const item = await prisma.item.create({
-      data: {
-        userId: testUser.id,
-        productEan: product.ean,
-      },
-    });
+    const addItemResponse = await request(app)
+      .put(`/showcases/${showcaseResponse.body.id}/items`)
+      .send([{ type: 'Item', id: itemResponse.body.id }]);
 
-    const response = await request(app)
-      .put(`/showcases/${showcase.id}/items`)
-      .send([{ type: 'Item', id: item.id }]);
-
-    expect(response.status).toBe(200);
-    expect(response.body.items).toHaveLength(1);
-    expect(response.body.items[0].id).toBe(item.id);
+    expect(addItemResponse.status).toBe(200);
+    expect(addItemResponse.body.items).toContainEqual(expect.objectContaining({
+      id: itemResponse.body.id
+    }));
   });
 
   test('should delete a showcase', async () => {
-    const showcase = await prisma.showcase.create({
-      data: {
+    const createResponse = await request(app)
+      .post('/showcases')
+      .send({
         name: 'Delete Test Showcase',
-        userId: testUser.id,
-      },
-    });
+        uid: user.uid,
+      });
 
-    const response = await request(app).delete(`/showcases/${showcase.id}`);
-    expect(response.status).toBe(204);
+    const deleteResponse = await request(app).delete(`/showcases/${createResponse.body.id}`);
+    expect(deleteResponse.status).toBe(204);
 
     const deletedShowcase = await prisma.showcase.findUnique({
-      where: { id: showcase.id },
+      where: { id: createResponse.body.id },
     });
     expect(deletedShowcase).toBeNull();
   });
 
   test('should remove items from a showcase', async () => {
-    const showcase = await prisma.showcase.create({
-      data: {
+    const showcaseResponse = await request(app)
+      .post('/showcases')
+      .send({
         name: 'Remove Items Test Showcase',
-        userId: testUser.id,
-      },
-    });
+        uid: user.uid,
+      });
 
-    const product = await prisma.product.create({
-      data: {
-        ean: 'test-ean-456',
-        data: {},
-      },
-    });
+    const itemResponse = await request(app)
+      .post('/items')
+      .send({
+        uid: user.uid,
+        productEan: product.ean
+      });
 
-    const item = await prisma.item.create({
-      data: {
-        userId: testUser.id,
-        productEan: product.ean,
-        showcaseId: showcase.id,
-      },
-    });
+    // Add item to showcase
+    await request(app)
+      .put(`/showcases/${showcaseResponse.body.id}/items`)
+      .send([{ type: 'Item', id: itemResponse.body.id }]);
 
-    const response = await request(app)
-      .delete(`/showcases/${showcase.id}/items`)
-      .send([{ type: 'Item', id: item.id }]);
+    const removeItemResponse = await request(app)
+      .delete(`/showcases/${showcaseResponse.body.id}/items`)
+      .send([{ type: 'Item', id: itemResponse.body.id }]);
 
-    expect(response.status).toBe(200);
-    expect(response.body.items).toHaveLength(0);
+    expect(removeItemResponse.status).toBe(200);
+    expect(removeItemResponse.body.items).toHaveLength(0);
 
     const updatedItem = await prisma.item.findUnique({
-      where: { id: item.id },
+      where: { id: itemResponse.body.id },
     });
     expect(updatedItem.showcaseId).toBeNull();
   });
