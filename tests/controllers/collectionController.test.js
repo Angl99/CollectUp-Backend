@@ -7,11 +7,6 @@ describe('Collection Controller', () => {
   let showcase1, showcase2, user, product;
 
   beforeEach(async () => {
-    await prisma.collection.deleteMany();
-    await prisma.showcase.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.product.deleteMany();
-
     // Create users
     user1 = await prisma.user.create({
       data: {
@@ -55,14 +50,6 @@ describe('Collection Controller', () => {
         data: { name: 'Test Product', description: 'This is a test product' },
       },
     });
-  });
-
-  afterAll(async () => {
-    await prisma.collection.deleteMany();
-    await prisma.showcase.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.product.deleteMany();
-    await prisma.$disconnect();
   });
 
   test('should create a new collection', async () => {
