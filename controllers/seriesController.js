@@ -71,6 +71,81 @@ const seriesController = {
       res.status(500).json({ error: 'Failed to delete series' });
     }
   },
+
+  // Get all products for a specific series
+  getSeriesProducts: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const seriesWithProducts = await prisma.series.findUnique({
+        where: { id: parseInt(id) },
+        include: {
+          products: {
+            include: {
+              product: true
+            }
+          }
+        }
+      });
+      if (seriesWithProducts) {
+        res.json(seriesWithProducts.products.map(p => p.product));
+      } else {
+        res.status(404).json({ error: 'Series not found' });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Failed to fetch series products' });
+    }
+  },
+
+  // Add a product to a series
+  addProductToSeries: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { productEan } = req.body;
+      const updatedSeries = await prisma.series.update({
+        where: { id: parseInt(id) },
+        data: {
+          products: {
+            create: {
+              product: {
+                connect: { ean: productEan }
+              }
+            }
+          }
+        },
+        include: {
+          products: {
+            include: {
+              product: true
+            }
+          }
+        }
+      });
+      res.json(updatedSeries);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Failed to add product to series' });
+    }
+  },
+
+  // Remove a product from a series
+  removeProductFromSeries: async (req, res) => {
+    try {
+      const { id, productEan } = req.params;
+      await prisma.productSeries.delete({
+        where: {
+          productEan_seriesId: {
+            productEan: productEan,
+            seriesId: parseInt(id)
+          }
+        }
+      });
+      res.status(200).json({ message: 'Product removed from series' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Failed to remove product from series' });
+    }
+  },
 };
 
 module.exports = seriesController;
