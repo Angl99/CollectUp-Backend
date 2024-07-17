@@ -4,25 +4,25 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('Collection Controller', () => {
-  let showcase1, showcase2, user, product;
+  let showcase1, showcase2, user1, user2, product;
 
   beforeEach(async () => {
     // Create users
     user1 = await prisma.user.create({
       data: {
-        uid: 'testuser123',
+        uid: `testuser123${Date.now()}`,
         first_name: 'Test',
         last_name: 'User',
-        email: 'testuser@example.com',
+        email: `testuser${Date.now()}@example.com`,
       },
     });
 
     user2 = await prisma.user.create({
       data: {
-        uid: 'testuser456',
+        uid: `testuser456${Date.now()}`,
         first_name: 'Another',
         last_name: 'User',
-        email: 'anotheruser@example.com',
+        email: `anotheruser${Date.now()}@example.com`,
       },
     });
 
@@ -50,6 +50,10 @@ describe('Collection Controller', () => {
         data: { name: 'Test Product', description: 'This is a test product' },
       },
     });
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
   test('should create a new collection', async () => {

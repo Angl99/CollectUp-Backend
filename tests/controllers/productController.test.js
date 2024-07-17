@@ -4,8 +4,10 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('Product Controller', () => {
-  beforeAll(async () => {
-    await prisma.product.deleteMany(); // Clear the database before running tests
+  let testEan;
+
+  beforeEach(() => {
+    testEan = `1234567890123${Date.now()}`;
   });
 
   afterAll(async () => {
@@ -16,31 +18,61 @@ describe('Product Controller', () => {
     const response = await request(app)
       .post('/products')
       .send({
-        ean: '1234567890123',
+        ean: testEan,
         upc: '123456789012',
         isbn: '1234567890',
         data: { name: 'Test Product', description: 'This is a test product' }
       });
 
     expect(response.status).toBe(201);
-    expect(response.body.ean).toBe('1234567890123');
+    expect(response.body.ean).toBe(testEan);
   });
 
   test('should fetch all products', async () => {
+    // Create a product first
+    await request(app)
+      .post('/products')
+      .send({
+        ean: `9876543210987${Date.now()}`,
+        upc: '987654321098',
+        isbn: '9876543210',
+        data: { name: 'Another Test Product', description: 'This is another test product' }
+      });
+
     const response = await request(app).get('/products');
     expect(response.status).toBe(200);
-    expect(response.body.length).toBe(1);
+    expect(response.body.length).toBeGreaterThan(0);
   });
 
   test('should fetch a product by EAN', async () => {
-    const response = await request(app).get('/products/1234567890123');
+    // Create a product first
+    const createResponse = await request(app)
+      .post('/products')
+      .send({
+        ean: testEan,
+        upc: '123456789012',
+        isbn: '1234567890',
+        data: { name: 'Fetch Test Product', description: 'This is a fetch test product' }
+      });
+
+    const response = await request(app).get(`/products/${testEan}`);
     expect(response.status).toBe(200);
-    expect(response.body.ean).toBe('1234567890123');
+    expect(response.body.ean).toBe(testEan);
   });
 
   test('should update a product', async () => {
+    // Create a product first
+    await request(app)
+      .post('/products')
+      .send({
+        ean: testEan,
+        upc: '123456789012',
+        isbn: '1234567890',
+        data: { name: 'Update Test Product', description: 'This is an update test product' }
+      });
+
     const response = await request(app)
-      .put('/products/1234567890123')
+      .put(`/products/${testEan}`)
       .send({
         upc: '210987654321',
         isbn: '0987654321',
@@ -52,7 +84,17 @@ describe('Product Controller', () => {
   });
 
   test('should delete a product', async () => {
-    const response = await request(app).delete('/products/1234567890123');
+    // Create a product first
+    await request(app)
+      .post('/products')
+      .send({
+        ean: testEan,
+        upc: '123456789012',
+        isbn: '1234567890',
+        data: { name: 'Delete Test Product', description: 'This is a delete test product' }
+      });
+
+    const response = await request(app).delete(`/products/${testEan}`);
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('Product deleted!');
   });

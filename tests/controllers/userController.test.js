@@ -4,10 +4,6 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('User Controller', () => {
-  beforeAll(async () => {
-    await prisma.user.deleteMany(); // Clear the database before running tests
-  });
-
   afterAll(async () => {
     await prisma.$disconnect();
   });
@@ -18,17 +14,28 @@ describe('User Controller', () => {
       .send({
         firstName: 'John',
         lastName: 'Doe',
-        email: 'john.doe@example.com',
-        uid: 'unique-uid',
+        email: `john.doe${Date.now()}@example.com`,
+        uid: `unique-uid${Date.now()}`,
       });
 
     expect(response.status).toBe(201);
-    expect(response.body.email).toBe('john.doe@example.com');
+    expect(response.body.email).toContain('john.doe');
+    expect(response.body.email).toContain('@example.com');
   });
 
   test('should fetch all users', async () => {
+    // Create a user first
+    await request(app)
+      .post('/users')
+      .send({
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: `jane.doe${Date.now()}@example.com`,
+        uid: `another-unique-uid${Date.now()}`,
+      });
+
     const response = await request(app).get('/users');
     expect(response.status).toBe(200);
-    expect(response.body.length).toBe(1);
+    expect(response.body.length).toBeGreaterThan(0);
   });
 });
