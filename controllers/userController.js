@@ -1,10 +1,4 @@
-const express = require("express");
-const app = express();
-const { PrismaClient } = require("@prisma/client");
-
-app.use(express.json());
-
-const prisma = new PrismaClient();
+const { prisma } = require('../helpers/prismaDbHelper')
 
 const index = async (req, res) => {
     try {
