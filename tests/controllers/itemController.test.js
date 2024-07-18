@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 describe('Item Controller', () => {
   let user, product;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     // Create a user
     user = await prisma.user.create({
       data: {
@@ -59,7 +59,6 @@ describe('Item Controller', () => {
     expect(Array.isArray(response.body)).toBeTruthy();
     expect(response.body.length).toBeGreaterThan(0);
   });
-
 
   test('should update an item', async () => {
     // Create an item first

@@ -10,17 +10,6 @@ beforeAll(async () => {
   try {
     execSync('node scripts/initTestDb.js', { stdio: 'inherit' });
     console.log('Test database initialized.');
-    
-    await prisma.productSeries.deleteMany();
-    await prisma.series.deleteMany();
-    await prisma.item.deleteMany();
-    await prisma.collection.deleteMany();
-    await prisma.showcase.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.product.deleteMany();
-    
-    // Add a delay after initialization
-    console.log('Waiting for 2 seconds before starting tests...');
     await delay(2000);
     console.log('Starting tests...');
   } catch (error) {
@@ -29,11 +18,17 @@ beforeAll(async () => {
   }
 });
 
-afterAll(async () => {
-  await prisma.$disconnect();
+beforeEach(async () => {
+  await prisma.productSeries.deleteMany();
+  await prisma.series.deleteMany();
+  await prisma.item.deleteMany();
+  await prisma.collection.deleteMany();
+  await prisma.showcase.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.product.deleteMany();
+  await delay(500);
 });
 
-// Add a delay between each test suite
-beforeEach(async () => {
-  await delay(500);
+afterAll(async () => {
+  await prisma.$disconnect();
 });
