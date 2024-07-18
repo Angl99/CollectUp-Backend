@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 describe('Product Controller', () => {
   let testEan;
 
-  beforeEach(() => {
-    testEan = `1234567890123${Date.now()}`;
+  beforeAll(() => {
+    testEan = `1234567890123${Math.random()}`;
   });
 
   afterAll(async () => {

@@ -4,7 +4,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('User Controller', () => {
-  afterAll(async () => {
+  afterEach(async () => {
     await prisma.$disconnect();
   });
 
