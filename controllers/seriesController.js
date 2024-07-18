@@ -1,5 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { prisma } = require('../helpers/prismaDbHelper')
+
 
 const seriesController = {
   // Get all series
@@ -68,6 +68,7 @@ const seriesController = {
       });
       res.status(200).json({ message: 'Series deleted!' });
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: 'Failed to delete series' });
     }
   },
