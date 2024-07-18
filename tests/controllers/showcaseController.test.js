@@ -56,12 +56,13 @@ describe('Showcase Controller', () => {
   });
 
   test('should fetch all showcases', async () => {
+    const testUser = await createTestUser();
     // Create a showcase first
     await request(app)
       .post('/showcases')
       .send({
         name: 'Test Showcase',
-        uid: user.uid,
+        uid: testUser.uid,
       });
 
     const response = await request(app).get('/showcases');
@@ -71,11 +72,12 @@ describe('Showcase Controller', () => {
   });
 
   test('should fetch a specific showcase', async () => {
+    const testUser = await createTestUser();
     const createResponse = await request(app)
       .post('/showcases')
       .send({
         name: 'Fetch Test Showcase',
-        uid: user.uid,
+        uid: testUser.uid,
       });
 
     const fetchResponse = await request(app).get(`/showcases/${createResponse.body.id}`);
@@ -85,11 +87,12 @@ describe('Showcase Controller', () => {
   });
 
   test('should update a showcase', async () => {
+    const testUser = await createTestUser();
     const createResponse = await request(app)
       .post('/showcases')
       .send({
         name: 'Update Test Showcase',
-        uid: user.uid,
+        uid: testUser.uid,
       });
 
     const updateResponse = await request(app)
@@ -103,18 +106,20 @@ describe('Showcase Controller', () => {
   });
 
   test('should add items to a showcase', async () => {
+    const testUser = await createTestUser();
+    const testProduct = await createTestProduct();
     const showcaseResponse = await request(app)
       .post('/showcases')
       .send({
         name: 'Add Items Test Showcase',
-        uid: user.uid,
+        uid: testUser.uid,
       });
 
     const itemResponse = await request(app)
       .post('/items')
       .send({
-        uid: user.uid,
-        productEan: product.ean
+        uid: testUser.uid,
+        productEan: testProduct.ean
       });
 
     const addItemResponse = await request(app)
@@ -128,11 +133,12 @@ describe('Showcase Controller', () => {
   });
 
   test('should delete a showcase', async () => {
+    const testUser = await createTestUser();
     const createResponse = await request(app)
       .post('/showcases')
       .send({
         name: 'Delete Test Showcase',
-        uid: user.uid,
+        uid: testUser.uid,
       });
 
     const deleteResponse = await request(app).delete(`/showcases/${createResponse.body.id}`);
@@ -145,18 +151,20 @@ describe('Showcase Controller', () => {
   });
 
   test('should remove items from a showcase', async () => {
+    const testUser = await createTestUser();
+    const testProduct = await createTestProduct();
     const showcaseResponse = await request(app)
       .post('/showcases')
       .send({
         name: 'Remove Items Test Showcase',
-        uid: user.uid,
+        uid: testUser.uid,
       });
 
     const itemResponse = await request(app)
       .post('/items')
       .send({
-        uid: user.uid,
-        productEan: product.ean
+        uid: testUser.uid,
+        productEan: testProduct.ean
       });
 
     // Add item to showcase
