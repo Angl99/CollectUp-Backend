@@ -4,16 +4,23 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('Showcase Controller', () => {
-  let user, product;
-
   beforeAll(async () => {
     await prisma.$connect();
+  });
+
+  beforeEach(async () => {
     await prisma.showcase.deleteMany();
     await prisma.item.deleteMany();
     await prisma.user.deleteMany();
     await prisma.product.deleteMany();
+  });
 
-    user = await prisma.user.create({
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
+  const createTestUser = async () => {
+    return await prisma.user.create({
       data: {
         uid: `testuser${Date.now()}`,
         first_name: 'Test',
@@ -21,8 +28,10 @@ describe('Showcase Controller', () => {
         email: `testuser${Date.now()}@example.com`,
       },
     });
+  };
 
-    product = await prisma.product.create({
+  const createTestProduct = async () => {
+    return await prisma.product.create({
       data: {
         ean: `1234567890123${Date.now()}`,
         upc: '123456789012',
@@ -30,27 +39,20 @@ describe('Showcase Controller', () => {
         data: { name: 'Test Product', description: 'This is a test product' },
       },
     });
-  });
-
-  afterAll(async () => {
-    await prisma.showcase.deleteMany();
-    await prisma.item.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.product.deleteMany();
-    await prisma.$disconnect();
-  });
+  };
 
   test('should create a new showcase', async () => {
+    const testUser = await createTestUser();
     const response = await request(app)
       .post('/showcases')
       .send({
         name: 'Test Showcase',
-        uid: user.uid,
+        uid: testUser.uid,
       });
 
     expect(response.status).toBe(201);
     expect(response.body.name).toBe('Test Showcase');
-    expect(response.body.userId).toBe(user.id);
+    expect(response.body.userId).toBe(testUser.id);
   });
 
   test('should fetch all showcases', async () => {
