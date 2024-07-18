@@ -92,23 +92,25 @@ describe('Series Controller', () => {
   });
 
   test('should add a product to a series', async () => {
-    // First, create a product
-    const productResponse = await request(app)
+    // First, create a new product different from the default one
+    const newProductResponse = await request(app)
       .post('/products')
       .send({
-        ean: 'test-ean-123',
-        data: { name: 'Test Product' }
+        ean: 'new-test-ean-456',
+        data: { name: 'New Test Product' }
       });
+
+    expect(newProductResponse.status).toBe(201);
 
     const response = await request(app)
       .post(`/series/${createdSeriesId}/products`)
       .send({
-        productEan: 'test-ean-123',
+        productEan: 'new-test-ean-456',
       });
 
     expect(response.status).toBe(200);
-    expect(response.body.products).toHaveLength(1);
-    expect(response.body.products[0].product.ean).toBe('test-ean-123');
+    expect(response.body.products).toHaveLength(2); // Now we expect 2 products
+    expect(response.body.products.some(p => p.product.ean === 'new-test-ean-456')).toBe(true);
   });
 
   test('should get all products for a series', async () => {
