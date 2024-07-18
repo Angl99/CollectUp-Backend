@@ -12,6 +12,7 @@ describe('Collection Controller', () => {
 
   beforeEach(async () => {
     await prisma.collection.deleteMany();
+    await prisma.item.deleteMany();
     await prisma.showcase.deleteMany();
     await prisma.user.deleteMany();
     await prisma.product.deleteMany();
@@ -67,6 +68,7 @@ describe('Collection Controller', () => {
 
   afterEach(async () => {
     await prisma.collection.deleteMany();
+    await prisma.item.deleteMany();
     await prisma.showcase.deleteMany();
     await prisma.user.deleteMany();
     await prisma.product.deleteMany();
