@@ -15,11 +15,33 @@ describe('Series Controller', () => {
     await prisma.series.deleteMany();
     await prisma.product.deleteMany();
 
-    // Create a test series
+    // Create a test product
+    const testProduct = await prisma.product.create({
+      data: {
+        ean: 'test-ean-123',
+        data: { name: 'Test Product' }
+      }
+    });
+
+    // Create a test series with the product
     const testSeries = await prisma.series.create({
       data: {
         name: 'Test Series',
+        products: {
+          create: {
+            product: {
+              connect: { ean: testProduct.ean }
+            }
+          }
+        }
       },
+      include: {
+        products: {
+          include: {
+            product: true
+          }
+        }
+      }
     });
     createdSeriesId = testSeries.id;
   });
@@ -97,9 +119,21 @@ describe('Series Controller', () => {
   });
 
   test('should remove a product from a series', async () => {
-    const response = await request(app).delete(`/series/${createdSeriesId}/products/test-ean-123`);
+    // First, verify that the product is in the series
+    let response = await request(app).get(`/series/${createdSeriesId}/products`);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(1);
+    expect(response.body[0].ean).toBe('test-ean-123');
+
+    // Now remove the product
+    response = await request(app).delete(`/series/${createdSeriesId}/products/test-ean-123`);
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('Product removed from series');
+
+    // Verify that the product is no longer in the series
+    response = await request(app).get(`/series/${createdSeriesId}/products`);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(0);
   });
 
   test('should delete a series', async () => {
