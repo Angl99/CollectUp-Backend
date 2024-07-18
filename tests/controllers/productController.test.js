@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../../index');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { prisma } = require('../../helpers/prismaDbHelper')
+
 
 describe('Product Controller', () => {
   let testEan;
@@ -105,6 +105,6 @@ describe('Product Controller', () => {
 
     const response = await request(app).delete(`/products/${testEan}`);
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Product deleted!');
+    expect(response.body.message).toBe('Product and associated ProductSeries entries deleted!');
   });
 });
