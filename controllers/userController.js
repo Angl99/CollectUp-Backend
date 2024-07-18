@@ -103,35 +103,34 @@ const updateById = async (req, res) => {
 
 const deleteById = async (req, res) => {
     const { id } = req.params;
-    const numericId = parseInt(id, 10); // Ensure id is treated as a numeric value
+    const numericId = parseInt(id, 10);
 
     try {
-        // First, check if the user exists
         const user = await prisma.user.findUnique({
             where: { id: numericId },
         });
 
         if (!user) {
-            // If the user doesn't exist, return a 404 error
             return res.status(404).send({ message: 'User not found' });
         }
 
-        // If the user exists, proceed to delete
+        // Delete user and all related data
         const deletedUser = await prisma.user.delete({
             where: { id: numericId },
+            include: {
+                showcases: true,
+                items: true,
+                collections: true,
+            },
         });
 
-        // Respond with a success message and the deleted user object
         return res.status(200).send({
-            message: 'User successfully deleted',
+            message: 'User and all associated data successfully deleted',
             deletedUser: deletedUser
         });
     } catch (error) {
         console.error(error);
-
-        // Here, you know the user exists, so any error is unexpected
-        // Respond with a generic 500 server error
-        res.status(500).send({ message: 'An unexpected error occurred' });
+        res.status(500).send({ message: 'An unexpected error occurred during deletion' });
     }
 }
 
