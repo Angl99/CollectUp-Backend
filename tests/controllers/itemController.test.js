@@ -70,24 +70,21 @@ describe('Item Controller', () => {
         productEan: product.ean
       });
 
-    const newProduct = await prisma.product.create({
-      data: {
-        ean: `9876543210987${Date.now()}`, // Append timestamp to ensure uniqueness
-        upc: '987654321098',
-        isbn: '9876543210',
-        data: { name: 'New Test Product', description: 'This is a new test product' },
-      },
-    });
-    console.log(createResponse.body);
+    const newName = 'Updated Item Name';
+    const newDescription = 'This is an updated description';
 
     const updateResponse = await request(app)
       .put(`/items/${createResponse.body.id}`)
       .send({
-        productEan: newProduct.ean,
+        name: newName,
+        description: newDescription,
       });
 
     expect(updateResponse.status).toBe(200);
-    expect(updateResponse.body.productEan).toBe(newProduct.ean);
+    expect(updateResponse.body.name).toBe(newName);
+    expect(updateResponse.body.description).toBe(newDescription);
+    // Ensure productEan hasn't changed
+    expect(updateResponse.body.productEan).toBe(product.ean);
   });
 
   test('should delete an item', async () => {
