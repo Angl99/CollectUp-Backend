@@ -3,6 +3,8 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { execSync } = require('child_process');
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 beforeAll(async () => {
   console.log('Initializing test database...');
   execSync('node scripts/initTestDb.js', { stdio: 'inherit' });
@@ -14,8 +16,18 @@ beforeAll(async () => {
   await prisma.showcase.deleteMany();
   await prisma.user.deleteMany();
   await prisma.product.deleteMany();
+  
+  // Add a delay after initialization
+  console.log('Waiting for 2 seconds before starting tests...');
+  await delay(2000);
+  console.log('Starting tests...');
 });
 
 afterAll(async () => {
   await prisma.$disconnect();
+});
+
+// Add a delay between each test suite
+beforeEach(async () => {
+  await delay(500);
 });
