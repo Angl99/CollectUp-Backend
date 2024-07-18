@@ -14,6 +14,14 @@ describe('Series Controller', () => {
     await prisma.productSeries.deleteMany();
     await prisma.series.deleteMany();
     await prisma.product.deleteMany();
+
+    // Create a test series
+    const testSeries = await prisma.series.create({
+      data: {
+        name: 'Test Series',
+      },
+    });
+    createdSeriesId = testSeries.id;
   });
 
   afterEach(async () => {
@@ -30,18 +38,18 @@ describe('Series Controller', () => {
     const response = await request(app)
       .post('/series')
       .send({
-        name: 'Test Series',
+        name: 'Another Test Series',
       });
 
     expect(response.status).toBe(201);
-    expect(response.body.name).toBe('Test Series');
-    createdSeriesId = response.body.id;
+    expect(response.body.name).toBe('Another Test Series');
   });
 
   test('should fetch all series', async () => {
     const response = await request(app).get('/series');
     expect(response.status).toBe(200);
     expect(response.body.length).toBeGreaterThan(0);
+    expect(response.body.some(series => series.id === createdSeriesId)).toBe(true);
   });
 
   test('should fetch a specific series by ID', async () => {
