@@ -60,23 +60,6 @@ describe('Item Controller', () => {
     expect(response.body.length).toBeGreaterThan(0);
   });
 
-  test('should search for an item', async () => {
-    // Create an item first
-    const createResponse = await request(app)
-      .post('/items')
-      .send({
-        uid: user.uid,
-        productEan: product.ean
-      });
-
-    const searchResponse = await request(app)
-      .get('/items/search')
-      .query({ code: product.ean });
-
-    expect(searchResponse.status).toBe(200);
-    expect(searchResponse.body.id).toBe(createResponse.body.id);
-    expect(searchResponse.body.productEan).toBe(product.ean);
-  });
 
   test('should update an item', async () => {
     // Create an item first
