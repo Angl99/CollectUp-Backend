@@ -16,14 +16,15 @@ datasource db {
 // Add brand table
 
 model User {
-  id         Int        @id @default(autoincrement())
-  uid        String     @unique
+  id         Int          @id @default(autoincrement())
+  uid        String       @unique
   first_name String
   last_name  String
-  created_at DateTime   @default(now())
-  email      String     @unique
+  created_at DateTime     @default(now())
+  email      String       @unique
   showcases  Showcase[]
   items      Item[]
+  collections Collection[]
 }
 
 
@@ -32,7 +33,7 @@ model Item {
   id           Int          @id @default(autoincrement())
   userId       Int
   collectionId Int?
-  user         User         @relation(fields: [userId], references: [id])
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   collection   Collection?  @relation(fields: [collectionId], references: [id])
   Showcase     Showcase?    @relation(fields: [showcaseId], references: [id])
   showcaseId   Int?
@@ -47,7 +48,7 @@ model Showcase {
   userId      Int          @unique
   collections Collection[]
   items       Item[]
-  user        User         @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // collections are only related to other items (eg. All demon slayer funko pop figues in a single collection)
@@ -57,6 +58,8 @@ model Collection {
   items      Item[]
   showcase   Showcase? @relation(fields: [showcaseId], references: [id])
   showcaseId Int?
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Series data pertains to particular products (eg. Berserk, DemonSlayer, Naruto)
