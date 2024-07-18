@@ -6,14 +6,14 @@ const prisma = new PrismaClient();
 describe('Item Controller', () => {
   let user, product;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     // Create a user
     user = await prisma.user.create({
       data: {
         uid: `testuser${Date.now()}`,
         first_name: 'Test',
         last_name: 'User',
-        email: `testuser${Date.now()}@example.com`,
+        email: `testuser${Math.random()}@example.com`,
       },
     });
 
@@ -28,7 +28,7 @@ describe('Item Controller', () => {
     });
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await prisma.$disconnect();
   });
 
@@ -78,6 +78,7 @@ describe('Item Controller', () => {
         data: { name: 'New Test Product', description: 'This is a new test product' },
       },
     });
+    console.log(createResponse.body);
 
     const updateResponse = await request(app)
       .put(`/items/${createResponse.body.id}`)
