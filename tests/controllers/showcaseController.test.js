@@ -8,9 +8,6 @@ describe('Showcase Controller', () => {
 
   beforeAll(async () => {
     await prisma.$connect();
-  });
-
-  beforeEach(async () => {
     await prisma.showcase.deleteMany();
     await prisma.item.deleteMany();
     await prisma.user.deleteMany();
@@ -35,14 +32,11 @@ describe('Showcase Controller', () => {
     });
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await prisma.showcase.deleteMany();
     await prisma.item.deleteMany();
     await prisma.user.deleteMany();
     await prisma.product.deleteMany();
-  });
-
-  afterAll(async () => {
     await prisma.$disconnect();
   });
 
