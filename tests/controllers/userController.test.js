@@ -10,6 +10,7 @@ describe('User Controller', () => {
   });
 
   afterAll(async () => {
+    await prisma.item.deleteMany();
     await prisma.user.deleteMany();
     await prisma.$disconnect();
   });
