@@ -12,10 +12,12 @@ describe('Product Controller', () => {
   });
 
   beforeEach(async () => {
+    await prisma.item.deleteMany();
     await prisma.product.deleteMany();
   });
 
   afterEach(async () => {
+    await prisma.item.deleteMany();
     await prisma.product.deleteMany();
   });
 
