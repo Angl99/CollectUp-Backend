@@ -4,7 +4,7 @@ const { prisma } = require('../../helpers/prismaDbHelper')
 
 
 describe('Collection Controller', () => {
-  let showcase1, showcase2, user1, user2, product;
+  let showcase1, showcase2, user1, user2, product, defaultCollection;
 
   beforeAll(async () => {
     await prisma.$connect();
@@ -56,6 +56,13 @@ describe('Collection Controller', () => {
         data: { name: 'Test Product', description: 'This is a test product' },
       },
     });
+
+    defaultCollection = await prisma.collection.create({
+      data: {
+        name: 'Default Collection',
+        showcaseId: showcase1.id,
+      },
+    });
   });
 
   afterEach(async () => {
@@ -86,6 +93,11 @@ describe('Collection Controller', () => {
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBeTruthy();
     expect(response.body.length).toBeGreaterThan(0);
+    expect(response.body).toContainEqual(expect.objectContaining({
+      id: defaultCollection.id,
+      name: 'Default Collection',
+      showcaseId: showcase1.id
+    }));
   });
 
   test('should fetch a collection by ID', async () => {
@@ -134,13 +146,6 @@ describe('Collection Controller', () => {
   });
 
   test('should add an item to a collection', async () => {
-    const collectionResponse = await request(app)
-      .post('/collections')
-      .send({
-        name: 'Add Item Test Collection',
-        showcaseId: showcase1.id
-      });
-
     const itemResponse = await request(app)
       .post('/items')
       .send({
@@ -155,7 +160,7 @@ describe('Collection Controller', () => {
     const addItemResponse = await request(app)
       .post('/collections/add-item')
       .send({
-        collectionId: collectionResponse.body.id,
+        collectionId: defaultCollection.id,
         itemId: itemResponse.body.id
       });
 
