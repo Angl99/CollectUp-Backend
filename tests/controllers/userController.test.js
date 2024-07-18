@@ -6,17 +6,11 @@ const prisma = new PrismaClient();
 describe('User Controller', () => {
   beforeAll(async () => {
     await prisma.$connect();
-  });
-
-  beforeEach(async () => {
-    await prisma.user.deleteMany();
-  });
-
-  afterEach(async () => {
     await prisma.user.deleteMany();
   });
 
   afterAll(async () => {
+    await prisma.user.deleteMany();
     await prisma.$disconnect();
   });
 
