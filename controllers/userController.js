@@ -114,23 +114,34 @@ const deleteById = async (req, res) => {
             return res.status(404).send({ message: 'User not found' });
         }
 
-        // Delete all related items first
-        await prisma.item.deleteMany({
-            where: { userId: numericId },
-        });
+        // Start a transaction to ensure all operations are performed or none
+        const result = await prisma.$transaction(async (prisma) => {
+            // Delete all related items first
+            await prisma.item.deleteMany({
+                where: { userId: numericId },
+            });
 
-        // Delete user and other related data
-        const deletedUser = await prisma.user.delete({
-            where: { id: numericId },
-            include: {
-                showcases: true,
-                collections: true,
-            },
+            // Delete all related collections
+            await prisma.collection.deleteMany({
+                where: { userId: numericId },
+            });
+
+            // Delete the showcase (if exists)
+            await prisma.showcase.deleteMany({
+                where: { userId: numericId },
+            });
+
+            // Finally, delete the user
+            const deletedUser = await prisma.user.delete({
+                where: { id: numericId },
+            });
+
+            return deletedUser;
         });
 
         return res.status(200).send({
             message: 'User and all associated data successfully deleted',
-            deletedUser: deletedUser
+            deletedUser: result
         });
     } catch (error) {
         console.error(error);
