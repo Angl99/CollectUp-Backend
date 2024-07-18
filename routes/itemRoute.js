@@ -6,7 +6,7 @@ itemRouter.get('/', itemController.getAllItems);
 
 itemRouter.post('/', itemController.createItem);
 
-itemRouter.put('/:id', itemController.updateItemById);
+// itemRouter.put('/:id', itemController.updateItemById);
 
 itemRouter.delete('/:id', itemController.deleteItemById);
 

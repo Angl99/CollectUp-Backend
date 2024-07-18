@@ -1,6 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
+const { prisma } = require('../helpers/prismaDbHelper')
 const { getUserByUid } = require('../helpers/userHelper');
-const prisma = new PrismaClient();
+
 
 const getAllItems = async (req, res) => {
   try {
@@ -11,29 +11,6 @@ const getAllItems = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch items' });
   }
 };
-
-const searchItem = async (req, res) => {
-  const { code, type } = req.query;
-  try {
-    const item = await prisma.item.findFirst({
-      where: {
-        data: {
-          path: ['code'],
-          equals: code,
-        },
-      },
-    });
-    if (!item) {
-      return res.status(404).json(null);
-    }
-    res.json(item);
-  } catch (error) {
-    console.error('Error searching item:', error);
-    res.status(500).json({ error: 'Failed to search item' });
-  }
-};
-
-const { getUserByUid } = require('../helpers/userHelper');
 
 const createItem = async (req, res) => {
   const { uid, productEan } = req.body;
@@ -62,24 +39,23 @@ const createItem = async (req, res) => {
 };
 
 
-const updateItemById = async (req, res) => {
-  const { id } = req.params;
-  const { name, description } = req.body;
-  try {
-    const updatedItem = await prisma.item.update({
-      where: { id: parseInt(id) },
-      data: {
-        name,
-        description,
-        items: data,
-      },
-    });
-    res.json(updatedItem);
-  } catch (error) {
-    console.error('Error updating item:', error);
-    res.status(500).json({ error: 'Failed to update item' });
-  }
-};
+// const updateItemById = async (req, res) => {
+//   const { id } = req.params;
+//   const { name, description } = req.body;
+//   try {
+//     const updatedItem = await prisma.item.update({
+//       where: { id: parseInt(id) },
+//       data: {
+//         name,
+//         description,
+//       },
+//     });
+//     res.json(updatedItem);
+//   } catch (error) {
+//     console.error('Error updating item:', error);
+//     res.status(500).json({ error: 'Failed to update item' });
+//   }
+// };
 
 const deleteItemById = async (req, res) => {
   const { id } = req.params;
@@ -96,8 +72,7 @@ const deleteItemById = async (req, res) => {
 
 module.exports = {
   getAllItems,
-  searchItem,
   createItem,
-  updateItemById,
+  // updateItemById,
   deleteItemById,
 };

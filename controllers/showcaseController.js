@@ -1,6 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-const { getUserByUid } = require('../helpers/userHelper'); // Updated path
+const { prisma } = require('../helpers/prismaDbHelper')
+const { getUserByUid } = require('../helpers/userHelper'); 
 
 const showcaseController = {
   // Get all showcases

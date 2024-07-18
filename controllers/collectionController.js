@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { prisma } = require('../helpers/prismaDbHelper')
 
 const collectionController = {
   // Get all collections

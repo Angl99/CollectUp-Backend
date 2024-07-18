@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "node scripts/initTestDb.js; jest",
     "test:coverage": "jest --coverage",
     "start": "nodemon server.js"
   },
@@ -20,6 +20,7 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
+    "pg": "^8.12.0",
     "prisma": "^5.16.1",
     "supertest": "^7.0.0"
   }

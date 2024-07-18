@@ -141,6 +141,6 @@ describe('Series Controller', () => {
   test('should delete a series', async () => {
     const response = await request(app).delete(`/series/${createdSeriesId}`);
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Series deleted!');
+    expect(response.body.message).toBe('Series and associated ProductSeries entries deleted!');
   });
 });
