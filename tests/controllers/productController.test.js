@@ -1,13 +1,22 @@
 const request = require('supertest');
-const app = require('../../index'); // Adjust the path as necessary
+const app = require('../../index');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('Product Controller', () => {
   let testEan;
 
-  beforeAll(() => {
+  beforeAll(async () => {
+    await prisma.$connect();
     testEan = `1234567890123${Math.random()}`;
+  });
+
+  beforeEach(async () => {
+    await prisma.product.deleteMany();
+  });
+
+  afterEach(async () => {
+    await prisma.product.deleteMany();
   });
 
   afterAll(async () => {

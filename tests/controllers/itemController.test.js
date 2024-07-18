@@ -1,13 +1,20 @@
 const request = require('supertest');
-const app = require('../../index'); // Adjust the path as necessary
+const app = require('../../index');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('Item Controller', () => {
   let user, product;
 
+  beforeAll(async () => {
+    await prisma.$connect();
+  });
+
   beforeEach(async () => {
-    // Create a user
+    await prisma.item.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.product.deleteMany();
+
     user = await prisma.user.create({
       data: {
         uid: `testuser${Date.now()}`,
@@ -17,10 +24,9 @@ describe('Item Controller', () => {
       },
     });
 
-    // Create a product
     product = await prisma.product.create({
       data: {
-        ean: `1234567890123${Date.now()}`, // Append timestamp to ensure uniqueness
+        ean: `1234567890123${Date.now()}`,
         upc: '123456789012',
         isbn: '1234567890',
         data: { name: 'Test Product', description: 'This is a test product' },
@@ -29,6 +35,12 @@ describe('Item Controller', () => {
   });
 
   afterEach(async () => {
+    await prisma.item.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.product.deleteMany();
+  });
+
+  afterAll(async () => {
     await prisma.$disconnect();
   });
 

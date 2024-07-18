@@ -1,13 +1,21 @@
 const request = require('supertest');
-const app = require('../../index'); // Adjust the path as necessary
+const app = require('../../index');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('Collection Controller', () => {
   let showcase1, showcase2, user1, user2, product;
 
+  beforeAll(async () => {
+    await prisma.$connect();
+  });
+
   beforeEach(async () => {
-    // Create users
+    await prisma.collection.deleteMany();
+    await prisma.showcase.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.product.deleteMany();
+
     user1 = await prisma.user.create({
       data: {
         uid: `testuser123${Date.now()}`,
@@ -26,7 +34,6 @@ describe('Collection Controller', () => {
       },
     });
 
-    // Create showcases
     showcase1 = await prisma.showcase.create({
       data: {
         name: 'Test Showcase 1',
@@ -41,15 +48,21 @@ describe('Collection Controller', () => {
       },
     });
 
-    // Create a product with a unique EAN
     product = await prisma.product.create({
       data: {
-        ean: `1234567890123${Date.now()}`, // Append timestamp to ensure uniqueness
+        ean: `1234567890123${Date.now()}`,
         upc: '123456789012',
         isbn: '1234567890',
         data: { name: 'Test Product', description: 'This is a test product' },
       },
     });
+  });
+
+  afterEach(async () => {
+    await prisma.collection.deleteMany();
+    await prisma.showcase.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.product.deleteMany();
   });
 
   afterAll(async () => {

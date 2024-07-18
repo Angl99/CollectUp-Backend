@@ -1,10 +1,26 @@
 const request = require('supertest');
-const app = require('../../index'); // Adjust the path as necessary
+const app = require('../../index');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 describe('Series Controller', () => {
   let createdSeriesId;
+
+  beforeAll(async () => {
+    await prisma.$connect();
+  });
+
+  beforeEach(async () => {
+    await prisma.productSeries.deleteMany();
+    await prisma.series.deleteMany();
+    await prisma.product.deleteMany();
+  });
+
+  afterEach(async () => {
+    await prisma.productSeries.deleteMany();
+    await prisma.series.deleteMany();
+    await prisma.product.deleteMany();
+  });
 
   afterAll(async () => {
     await prisma.$disconnect();
