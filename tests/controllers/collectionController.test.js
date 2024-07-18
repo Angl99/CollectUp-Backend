@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../../index');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { prisma } = require('../../helpers/prismaDbHelper')
+
 
 describe('Collection Controller', () => {
   let showcase1, showcase2, user1, user2, product;
