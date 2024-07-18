@@ -65,8 +65,11 @@ const seriesController = {
       const { id } = req.params;
       await prisma.series.delete({
         where: { id: parseInt(id) },
+        include: {
+          products: true
+        }
       });
-      res.status(200).json({ message: 'Series deleted!' });
+      res.status(200).json({ message: 'Series and associated ProductSeries entries deleted!' });
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: 'Failed to delete series' });

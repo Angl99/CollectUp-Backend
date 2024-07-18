@@ -63,7 +63,7 @@ model Collection {
 model Series {
   id       Int             @id @default(autoincrement())
   name     String
-  products ProductSeries[]
+  products ProductSeries[] @relation("SeriesToProductSeries")
 }
 
 // Join Table for Many-to-Many relationships (for ex. collaboration products)
@@ -71,7 +71,7 @@ model ProductSeries {
   productEan String
   seriesId   Int
   product    Product @relation(fields: [productEan], references: [ean])
-  series     Series  @relation(fields: [seriesId], references: [id])
+  series     Series  @relation("SeriesToProductSeries", fields: [seriesId], references: [id], onDelete: Cascade)
 
   @@id([productEan, seriesId])
 }
