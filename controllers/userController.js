@@ -114,12 +114,16 @@ const deleteById = async (req, res) => {
             return res.status(404).send({ message: 'User not found' });
         }
 
-        // Delete user and all related data
+        // Delete all related items first
+        await prisma.item.deleteMany({
+            where: { userId: numericId },
+        });
+
+        // Delete user and other related data
         const deletedUser = await prisma.user.delete({
             where: { id: numericId },
             include: {
                 showcases: true,
-                items: true,
                 collections: true,
             },
         });

@@ -33,7 +33,7 @@ model Item {
   id           Int          @id @default(autoincrement())
   userId       Int
   collectionId Int?
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id])
   collection   Collection?  @relation(fields: [collectionId], references: [id])
   Showcase     Showcase?    @relation(fields: [showcaseId], references: [id])
   showcaseId   Int?
