@@ -4,13 +4,10 @@ const itemController = require('../controllers/itemController');
 
 itemRouter.get('/', itemController.getAllItems);
 
-itemRouter.get('/search', itemController.searchItem);
-
 itemRouter.post('/', itemController.createItem);
 
-itemRouter.put('/:id', itemController.updateItemById);
+// itemRouter.put('/:id', itemController.updateItemById);
 
 itemRouter.delete('/:id', itemController.deleteItemById);
-
 
 module.exports = itemRouter;

@@ -1,6 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-const { getUserByUid } = require('../helpers/userHelper'); // Updated path
+const { prisma } = require('../helpers/prismaDbHelper')
+const { getUserByUid } = require('../helpers/userHelper'); 
 
 const showcaseController = {
   // Get all showcases
@@ -22,6 +21,14 @@ const showcaseController = {
       const user = await getUserByUid(uid);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
+      }
+
+      const existingShowcase = await prisma.showcase.findUnique({
+        where: { userId: user.id },
+      });
+
+      if (existingShowcase) {
+        return res.status(400).json({ error: 'User already has a showcase' });
       }
 
       const newShowcase = await prisma.showcase.create({

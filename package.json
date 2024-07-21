@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node scripts/initTestDb.js; jest",
+    "test:coverage": "jest --coverage",
     "start": "nodemon server.js"
   },
   "keywords": [],
@@ -13,10 +14,14 @@
   "dependencies": {
     "@prisma/client": "^5.16.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.4",
-    "prisma": "^5.16.1"
+    "pg": "^8.12.0",
+    "prisma": "^5.16.1",
+    "supertest": "^7.0.0"
   }
 }

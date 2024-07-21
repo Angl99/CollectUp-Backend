@@ -1,5 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { prisma } = require('../helpers/prismaDbHelper')
+
 
 const productController = {
   // Get all products
@@ -68,11 +68,20 @@ const productController = {
   deleteByEan: async (req, res) => {
     try {
       const { ean } = req.params;
+      
+      // First, delete all associated ProductSeries entries
+      await prisma.productSeries.deleteMany({
+        where: { productEan: ean },
+      });
+
+      // Then delete the product
       await prisma.product.delete({
         where: { ean: ean },
       });
-      res.status(200).json({ message: 'Product deleted!'});
+      
+      res.status(200).json({ message: 'Product and associated ProductSeries entries deleted!'});
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: 'Failed to delete product' });
     }
   },
