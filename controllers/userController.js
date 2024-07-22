@@ -26,7 +26,15 @@ const create = async (req, res) => {
                 first_name: firstName,
                 last_name: lastName,
                 email: email,
-                uid: uid
+                uid: uid,
+                showcases: {
+                    create: {
+                        name: `${firstName}'s Showcase`
+                    }
+                }
+            },
+            include: {
+                showcases: true
             }
         })
         res.status(201).json(newUser)
