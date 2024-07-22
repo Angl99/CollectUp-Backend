@@ -39,6 +39,9 @@ model Item {
   showcaseId   Int?
   productEan   String
   Product      Product      @relation(fields: [productEan], references: [ean])
+  imageUrl     String?
+  condition    String
+  description  String?
 }
 
 // Showcase is unique per user
