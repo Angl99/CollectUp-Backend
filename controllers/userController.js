@@ -27,14 +27,14 @@ const create = async (req, res) => {
                 last_name: lastName,
                 email: email,
                 uid: uid,
-                showcases: {
+                showcase: {
                     create: {
                         name: `${firstName}'s Showcase`
                     }
                 }
             },
             include: {
-                showcases: true
+                showcase: true
             }
         })
         res.status(201).json(newUser)
@@ -68,6 +68,26 @@ const getById = async (req, res) => {
         res.status(500).send(error);
     }
 }
+
+const getByFirebaseId = async (req, res) => {
+    const { uid } = req.params;
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: (uid),
+            },
+        });
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(404).send({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error);
+    }
+}
+
 
 const updateById = async (req, res) => {
     const { id } = req.params;
@@ -130,9 +150,9 @@ const deleteById = async (req, res) => {
             });
 
             // Delete all related collections
-            await prisma.collection.deleteMany({
-                where: { userId: numericId },
-            });
+            // await prisma.collection.deleteMany({
+            //     where: { userId: numericId },
+            // });
 
             // Delete the showcase (if exists)
             await prisma.showcase.deleteMany({
@@ -161,6 +181,7 @@ module.exports = {
     index,
     create,
     getById,
+    getByFirebaseId,
     updateById,
     deleteById
 }
