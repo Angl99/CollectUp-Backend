@@ -31,12 +31,18 @@ const productController = {
     }
   },
 
-  // Get a specific product by EAN
-  getByEan: async (req, res) => {
+  // Get a specific product by EAN, ISBN, or UPC
+  getByCode: async (req, res) => {
     try {
-      const { ean } = req.params;
-      const product = await prisma.product.findUnique({
-        where: { ean: ean },
+      const { code } = req.params;
+      const product = await prisma.product.findFirst({
+        where: {
+          OR: [
+            { ean: code },
+            { isbn: code },
+            { upc: code }
+          ]
+        },
       });
       if (product) {
         res.json(product);
