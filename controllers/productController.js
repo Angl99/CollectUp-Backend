@@ -5,78 +5,47 @@ const productController = {
   getAllProducts: async (req, res) => {
     try {
       const products = await prisma.product.findMany();
-      res.json({
-        code: 'OK',
-        total: products.length,
-        offset: 0,
-        items: products.map(product => formatProductResponse(product))
-      });
+      res.json(products);
     } catch (error) {
       console.error('Error fetching products:', error);
-      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to fetch products' });
+      res.status(500).json({ error: 'Failed to fetch products' });
     }
   },
 
   // Create a new product
   createProduct: async (req, res) => {
     try {
-      const { ean, upc, isbn, title, description, brand, model, color, size, dimension, weight, category, images, offers } = req.body;
+      const { ean, upc, isbn, data } = req.body;
       const newProduct = await prisma.product.create({
         data: { 
           ean, 
           upc, 
           isbn, 
-          title, 
-          description, 
-          brand, 
-          model, 
-          color, 
-          size, 
-          dimension, 
-          weight, 
-          category, 
-          images, 
-          offers 
+          data 
         },
       });
-      res.status(201).json({
-        code: 'OK',
-        total: 1,
-        offset: 0,
-        items: [formatProductResponse(newProduct)]
-      });
+      res.status(201).json(newProduct);
     } catch (error) {
       console.error('Error creating product:', error);
-      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to create product' });
+      res.status(500).json({ error: 'Failed to create product' });
     }
   },
 
-  // Get a specific product by EAN, ISBN, or UPC
-  getProductByCode: async (req, res) => {
+  // Get a specific product by EAN
+  getProductByEan: async (req, res) => {
     try {
-      const { code } = req.params;
-      const product = await prisma.product.findFirst({
-        where: {
-          OR: [
-            { ean: code },
-            { isbn: code },
-            { upc: code }
-          ]
-        },
+      const { ean } = req.params;
+      const product = await prisma.product.findUnique({
+        where: { ean: ean },
       });
       if (product) {
-        res.json({
-          code: 'OK',
-          total: 1,
-          offset: 0,
-          items: [formatProductResponse(product)]
-        });
+        res.json(product);
       } else {
-        res.status(404).json({ code: 'NOT_FOUND', message: 'Product not found' });
+        res.status(404).json({ error: 'Product not found' });
       }
     } catch (error) {
       console.error('Error fetching product:', error);
-      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to fetch product' });
+      res.status(500).json({ error: 'Failed to fetch product' });
     }
   },
 
@@ -84,34 +53,19 @@ const productController = {
   updateProductByEan: async (req, res) => {
     try {
       const { ean } = req.params;
-      const { upc, isbn, title, description, brand, model, color, size, dimension, weight, category, images, offers } = req.body;
+      const { upc, isbn, data } = req.body;
       const updatedProduct = await prisma.product.update({
         where: { ean: ean },
         data: { 
           upc, 
           isbn, 
-          title, 
-          description, 
-          brand, 
-          model, 
-          color, 
-          size, 
-          dimension, 
-          weight, 
-          category, 
-          images, 
-          offers 
+          data 
         },
       });
-      res.json({
-        code: 'OK',
-        total: 1,
-        offset: 0,
-        items: [formatProductResponse(updatedProduct)]
-      });
+      res.json(updatedProduct);
     } catch (error) {
       console.error('Error updating product:', error);
-      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to update product' });
+      res.status(500).json({ error: 'Failed to update product' });
     }
   },
 
@@ -130,31 +84,12 @@ const productController = {
         });
       });
       
-      res.status(200).json({ code: 'OK', message: 'Product and associated ProductSeries entries deleted!' });
+      res.status(200).json({ message: 'Product and associated ProductSeries entries deleted successfully' });
     } catch (error) {
       console.error('Error deleting product:', error);
-      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to delete product' });
+      res.status(500).json({ error: 'Failed to delete product' });
     }
   },
 };
-
-function formatProductResponse(product) {
-  return {
-    ean: product.ean,
-    title: product.title,
-    upc: product.upc,
-    description: product.description,
-    brand: product.brand,
-    model: product.model,
-    color: product.color,
-    size: product.size,
-    dimension: product.dimension,
-    weight: product.weight,
-    category: product.category,
-    images: product.images,
-    offers: product.offers,
-    // Add other fields as needed
-  };
-}
 
 module.exports = productController;
