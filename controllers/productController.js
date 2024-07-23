@@ -4,27 +4,50 @@ const productController = {
   // Get all products
   getAllProducts: async (req, res) => {
     try {
-      // Fetch all products from the database
       const products = await prisma.product.findMany();
-      res.json(products);
+      res.json({
+        code: 'OK',
+        total: products.length,
+        offset: 0,
+        items: products.map(product => formatProductResponse(product))
+      });
     } catch (error) {
       console.error('Error fetching products:', error);
-      res.status(500).json({ error: 'Failed to fetch products' });
+      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to fetch products' });
     }
   },
 
   // Create a new product
   createProduct: async (req, res) => {
     try {
-      const { upc, isbn, ean, data } = req.body;
-      // Create a new product in the database
+      const { ean, upc, isbn, title, description, brand, model, color, size, dimension, weight, category, images, offers } = req.body;
       const newProduct = await prisma.product.create({
-        data: { upc, isbn, ean, data },
+        data: { 
+          ean, 
+          upc, 
+          isbn, 
+          title, 
+          description, 
+          brand, 
+          model, 
+          color, 
+          size, 
+          dimension, 
+          weight, 
+          category, 
+          images, 
+          offers 
+        },
       });
-      res.status(201).json(newProduct);
+      res.status(201).json({
+        code: 'OK',
+        total: 1,
+        offset: 0,
+        items: [formatProductResponse(newProduct)]
+      });
     } catch (error) {
       console.error('Error creating product:', error);
-      res.status(500).json({ error: 'Failed to create product' });
+      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to create product' });
     }
   },
 
@@ -32,7 +55,6 @@ const productController = {
   getProductByCode: async (req, res) => {
     try {
       const { code } = req.params;
-      // Find a product matching the given code
       const product = await prisma.product.findFirst({
         where: {
           OR: [
@@ -43,13 +65,18 @@ const productController = {
         },
       });
       if (product) {
-        res.json(product);
+        res.json({
+          code: 'OK',
+          total: 1,
+          offset: 0,
+          items: [formatProductResponse(product)]
+        });
       } else {
-        res.status(404).json({ error: 'Product not found' });
+        res.status(404).json({ code: 'NOT_FOUND', message: 'Product not found' });
       }
     } catch (error) {
       console.error('Error fetching product:', error);
-      res.status(500).json({ error: 'Failed to fetch product' });
+      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to fetch product' });
     }
   },
 
@@ -57,16 +84,34 @@ const productController = {
   updateProductByEan: async (req, res) => {
     try {
       const { ean } = req.params;
-      const { upc, isbn, data } = req.body;
-      // Update the product in the database
+      const { upc, isbn, title, description, brand, model, color, size, dimension, weight, category, images, offers } = req.body;
       const updatedProduct = await prisma.product.update({
         where: { ean: ean },
-        data: { upc, isbn, data },
+        data: { 
+          upc, 
+          isbn, 
+          title, 
+          description, 
+          brand, 
+          model, 
+          color, 
+          size, 
+          dimension, 
+          weight, 
+          category, 
+          images, 
+          offers 
+        },
       });
-      res.json(updatedProduct);
+      res.json({
+        code: 'OK',
+        total: 1,
+        offset: 0,
+        items: [formatProductResponse(updatedProduct)]
+      });
     } catch (error) {
       console.error('Error updating product:', error);
-      res.status(500).json({ error: 'Failed to update product' });
+      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to update product' });
     }
   },
 
@@ -75,25 +120,41 @@ const productController = {
     try {
       const { ean } = req.params;
       
-      // Start a transaction to ensure all operations are performed or none
       await prisma.$transaction(async (prisma) => {
-        // First, delete all associated ProductSeries entries
         await prisma.productSeries.deleteMany({
           where: { productEan: ean },
         });
 
-        // Then delete the product
         await prisma.product.delete({
           where: { ean: ean },
         });
       });
       
-      res.status(200).json({ message: 'Product and associated ProductSeries entries deleted!' });
+      res.status(200).json({ code: 'OK', message: 'Product and associated ProductSeries entries deleted!' });
     } catch (error) {
       console.error('Error deleting product:', error);
-      res.status(500).json({ error: 'Failed to delete product' });
+      res.status(500).json({ code: 'SERVER_ERR', message: 'Failed to delete product' });
     }
   },
 };
+
+function formatProductResponse(product) {
+  return {
+    ean: product.ean,
+    title: product.title,
+    upc: product.upc,
+    description: product.description,
+    brand: product.brand,
+    model: product.model,
+    color: product.color,
+    size: product.size,
+    dimension: product.dimension,
+    weight: product.weight,
+    category: product.category,
+    images: product.images,
+    offers: product.offers,
+    // Add other fields as needed
+  };
+}
 
 module.exports = productController;
