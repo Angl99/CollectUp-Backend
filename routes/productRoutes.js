@@ -5,6 +5,9 @@ const productController = require("../controllers/productController");
 // Get all products
 productRouter.get("/", productController.getAllProducts);
 
+// Search products
+productRouter.get("/search", productController.searchProducts);
+
 // Create a new product
 productRouter.post("/", productController.createProduct);
 

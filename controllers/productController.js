@@ -12,6 +12,31 @@ const productController = {
     }
   },
 
+  // Search products
+  searchProducts: async (req, res) => {
+    try {
+      const { query } = req.query;
+      if (!query) {
+        return res.status(400).json({ error: 'Search query is required' });
+      }
+
+      const products = await prisma.product.findMany({
+        where: {
+          OR: [
+            { data: { path: ['title'], string_contains: query } },
+            { data: { path: ['description'], string_contains: query } },
+            { data: { path: ['brand'], string_contains: query } }
+          ]
+        }
+      });
+
+      res.json(products);
+    } catch (error) {
+      console.error('Error searching products:', error);
+      res.status(500).json({ error: 'Failed to search products' });
+    }
+  },
+
   // Create a new product
   createProduct: async (req, res) => {
     try {
