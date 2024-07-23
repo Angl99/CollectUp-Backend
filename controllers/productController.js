@@ -91,7 +91,10 @@ const productController = {
         data: { 
           upc, 
           isbn, 
-          data 
+          data,
+          searchableTitle: data.title ? data.title.toLowerCase() : undefined,
+          searchableDescription: data.description ? data.description.toLowerCase() : undefined,
+          searchableBrand: data.brand ? data.brand.toLowerCase() : undefined
         },
       });
       res.json(updatedProduct);
