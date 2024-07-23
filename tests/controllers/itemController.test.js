@@ -74,31 +74,34 @@ describe('Item Controller', () => {
     expect(response.body.length).toBeGreaterThan(0);
   });
 
-//   test('should update an item', async () => {
-//     // Create an item first
-//     const createResponse = await request(app)
-//       .post('/items')
-//       .send({
-//         uid: user.uid,
-//         productEan: product.ean
-//       });
+  test('should update an item', async () => {
+    // Create an item first
+    const createResponse = await request(app)
+      .post('/items')
+      .send({
+        uid: user.uid,
+        productEan: product.ean
+      });
 
-//     const newName = 'Updated Item Name';
-//     const newDescription = 'This is an updated description';
+    const newImageUrl = 'https://example.com/new-image.jpg';
+    const newCondition = 'Like New';
+    const newUserDescription = 'This is an updated description';
 
-//     const updateResponse = await request(app)
-//       .put(`/items/${createResponse.body.id}`)
-//       .send({
-//         name: newName,
-//         description: newDescription,
-//       });
+    const updateResponse = await request(app)
+      .put(`/items/${createResponse.body.id}`)
+      .send({
+        imageUrl: newImageUrl,
+        condition: newCondition,
+        userDescription: newUserDescription,
+      });
 
-//     expect(updateResponse.status).toBe(200);
-//     expect(updateResponse.body.name).toBe(newName);
-//     expect(updateResponse.body.description).toBe(newDescription);
-//     // Ensure productEan hasn't changed
-//     expect(updateResponse.body.productEan).toBe(product.ean);
-//   });
+    expect(updateResponse.status).toBe(200);
+    expect(updateResponse.body.imageUrl).toBe(newImageUrl);
+    expect(updateResponse.body.condition).toBe(newCondition);
+    expect(updateResponse.body.userDescription).toBe(newUserDescription);
+    // Ensure productEan hasn't changed
+    expect(updateResponse.body.productEan).toBe(product.ean);
+  });
 
   test('should delete an item', async () => {
     // Create an item first
