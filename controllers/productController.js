@@ -20,12 +20,14 @@ const productController = {
         return res.status(400).json({ error: 'Search query is required' });
       }
 
+      const lowercaseQuery = query.toLowerCase();
+
       const products = await prisma.product.findMany({
         where: {
           OR: [
-            { data: { path: ['title'], string_contains: query, mode: 'insensitive' } },
-            { data: { path: ['description'], string_contains: query, mode: 'insensitive' } },
-            { data: { path: ['brand'], string_contains: query, mode: 'insensitive' } }
+            { searchableTitle: { contains: lowercaseQuery } },
+            { searchableDescription: { contains: lowercaseQuery } },
+            { searchableBrand: { contains: lowercaseQuery } }
           ]
         }
       });
@@ -48,7 +50,10 @@ const productController = {
           ean, 
           upc, 
           isbn, 
-          data 
+          data,
+          searchableTitle: data.title ? data.title.toLowerCase() : '',
+          searchableDescription: data.description ? data.description.toLowerCase() : '',
+          searchableBrand: data.brand ? data.brand.toLowerCase() : ''
         },
       });
       res.status(201).json(newProduct);

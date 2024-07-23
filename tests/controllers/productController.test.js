@@ -33,12 +33,16 @@ describe('Product Controller',  () => {
         isbn: '1234567890',
         data: {
           title: 'Test Product',
-          description: 'This is a test product'
+          description: 'This is a test product',
+          brand: 'TestBrand'
         }
       });
 
     expect(response.status).toBe(201);
     expect(response.body.ean).toBe(testEan);
+    expect(response.body.searchableTitle).toBe('test product');
+    expect(response.body.searchableDescription).toBe('this is a test product');
+    expect(response.body.searchableBrand).toBe('testbrand');
   });
 
   test('should fetch all products', async () => {
@@ -164,7 +168,7 @@ describe('Product Controller',  () => {
     response = await request(app).get('/products/search?query=ANOTHER SEARCH');
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
-    console.log('Search response:', response.body); // Add this line for debugging
+    console.log('Search response:', response.body);
 
     // Test search by brand (case-insensitive)
     response = await request(app).get('/products/search?query=testbrand');

@@ -83,10 +83,13 @@ model ProductSeries {
 
 //User doesn't own a Product
 model Product {
-  ean    String          @id
-  upc    String?
-  isbn   String?
-  data   Json
-  items  Item[]
-  series ProductSeries[]
+  ean             String          @id
+  upc             String?
+  isbn            String?
+  data            Json
+  searchableTitle String
+  searchableDescription String
+  searchableBrand String
+  items           Item[]
+  series          ProductSeries[]
 }
