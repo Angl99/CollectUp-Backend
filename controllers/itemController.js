@@ -101,6 +101,37 @@ const itemController = {
       res.status(500).json({ error: 'Failed to delete item' });
     }
   },
+
+  // Search items by associated product
+  searchItems: async (req, res) => {
+    try {
+      const { query } = req.query;
+      if (!query) {
+        return res.status(400).json({ error: 'Search query is required' });
+      }
+
+      const items = await prisma.item.findMany({
+        where: {
+          product: {
+            OR: [
+              { data: { path: ['title'], string_contains: query } },
+              { data: { path: ['description'], string_contains: query } },
+              { data: { path: ['brand'], string_contains: query } }
+            ]
+          }
+        },
+        include: {
+          product: true,
+          user: true
+        }
+      });
+
+      res.json(items);
+    } catch (error) {
+      console.error('Error searching items:', error);
+      res.status(500).json({ error: 'Failed to search items' });
+    }
+  },
 };
 
 module.exports = itemController;

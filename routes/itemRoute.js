@@ -5,6 +5,9 @@ const itemController = require('../controllers/itemController');
 // Get all items
 itemRouter.get('/', itemController.getAllItems);
 
+// Search items
+itemRouter.get('/search', itemController.searchItems);
+
 // Get an item by ID
 itemRouter.get('/:id', itemController.getItemById);
 

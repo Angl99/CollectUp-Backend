@@ -122,4 +122,73 @@ describe('Item Controller', () => {
     });
     expect(deletedItem).toBeNull();
   });
+
+  test('should search for items by associated product', async () => {
+    // Create two products
+    const product1 = await prisma.product.create({
+      data: {
+        ean: `1111111111111${Date.now()}`,
+        upc: '111111111111',
+        isbn: '1111111111',
+        data: {
+          title: 'Search Test Product 1',
+          description: 'This is a search test product',
+          brand: 'TestBrand'
+        }
+      }
+    });
+
+    const product2 = await prisma.product.create({
+      data: {
+        ean: `2222222222222${Date.now()}`,
+        upc: '222222222222',
+        isbn: '2222222222',
+        data: {
+          title: 'Search Test Product 2',
+          description: 'This is another search test product',
+          brand: 'AnotherBrand'
+        }
+      }
+    });
+
+    // Create items associated with these products
+    await prisma.item.create({
+      data: {
+        userId: user.id,
+        productEan: product1.ean,
+      }
+    });
+
+    await prisma.item.create({
+      data: {
+        userId: user.id,
+        productEan: product2.ean,
+      }
+    });
+
+    // Test search by title
+    let response = await request(app).get('/items/search?query=Search Test');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+
+    // Test search by description
+    response = await request(app).get('/items/search?query=another search');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+
+    // Test search by brand
+    response = await request(app).get('/items/search?query=TestBrand');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+
+    // Test search with no results
+    response = await request(app).get('/items/search?query=NonexistentProduct');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(0);
+
+    // Test search with empty query
+    response = await request(app).get('/items/search');
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Search query is required');
+  });
 });
