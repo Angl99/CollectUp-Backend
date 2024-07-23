@@ -12,6 +12,24 @@ const getAllItems = async (req, res) => {
   }
 };
 
+const getItemById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const item = await prisma.item.findUnique({
+      where: { id: parseInt(id) },
+    });
+    
+    if (!item) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+    
+    res.json(item);
+  } catch (error) {
+    console.error('Error fetching item:', error);
+    res.status(500).json({ error: 'Failed to fetch item' });
+  }
+};
+
 const createItem = async (req, res) => {
   const { uid, productEan } = req.body;
 
@@ -28,7 +46,7 @@ const createItem = async (req, res) => {
     const newItem = await prisma.item.create({
       data: {
         userId: user.id,
-        productEan: productEan,
+        productEan: productEan.ean,
       },
     });
     res.status(201).json(newItem);
@@ -39,23 +57,23 @@ const createItem = async (req, res) => {
 };
 
 
-// const updateItemById = async (req, res) => {
-//   const { id } = req.params;
-//   const { name, description } = req.body;
-//   try {
-//     const updatedItem = await prisma.item.update({
-//       where: { id: parseInt(id) },
-//       data: {
-//         name,
-//         description,
-//       },
-//     });
-//     res.json(updatedItem);
-//   } catch (error) {
-//     console.error('Error updating item:', error);
-//     res.status(500).json({ error: 'Failed to update item' });
-//   }
-// };
+const updateItemById = async (req, res) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+  try {
+    const updatedItem = await prisma.item.update({
+      where: { id: parseInt(id) },
+      data: {
+        name,
+        description,
+      },
+    });
+    res.json(updatedItem);
+  } catch (error) {
+    console.error('Error updating item:', error);
+    res.status(500).json({ error: 'Failed to update item' });
+  }
+};
 
 const deleteItemById = async (req, res) => {
   const { id } = req.params;
@@ -72,7 +90,8 @@ const deleteItemById = async (req, res) => {
 
 module.exports = {
   getAllItems,
+  getItemById,
   createItem,
-  // updateItemById,
+  updateItemById,
   deleteItemById,
 };

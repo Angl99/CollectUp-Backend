@@ -6,7 +6,7 @@ productRouter.get("/", productController.index);
 
 productRouter.post("/", productController.create);
 
-productRouter.get("/:ean", productController.getByEan);
+productRouter.get("/:code", productController.getByCode);
 
 productRouter.put("/:ean", productController.updateByEan);
 

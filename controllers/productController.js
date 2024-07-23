@@ -31,17 +31,24 @@ const productController = {
     }
   },
 
-  // Get a specific product by EAN
-  getByEan: async (req, res) => {
+  // Get a specific product by EAN, ISBN, or UPC
+  getByCode: async (req, res) => {
     try {
-      const { ean } = req.params;
-      const product = await prisma.product.findUnique({
-        where: { ean: ean },
+      const { code } = req.params;
+      const product = await prisma.product.findFirst({
+        where: {
+          OR: [
+            { ean: code },
+            { isbn: code },
+            { upc: code }
+          ]
+        },
       });
+      console.log(product);
       if (product) {
         res.json(product);
       } else {
-        res.status(404).json({ error: 'Product not found' });
+        res.json({ error: 'Product not found' });
       }
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch product' });

@@ -12,4 +12,6 @@ userRouter.put("/:id", userController.updateById);
 
 userRouter.delete("/:id", userController.deleteById);
 
+userRouter.get("/firebase/:uid", userController.getByFirebaseId)
+
 module.exports = userRouter;

@@ -16,29 +16,31 @@ datasource db {
 // Add brand table
 
 model User {
-  id         Int          @id @default(autoincrement())
-  uid        String       @unique
-  first_name String
-  last_name  String
-  created_at DateTime     @default(now())
-  email      String       @unique
-  showcases  Showcase[]
-  items      Item[]
+  id          Int          @id @default(autoincrement())
+  uid         String       @unique
+  first_name  String
+  last_name   String
+  created_at  DateTime     @default(now())
+  email       String       @unique
+  showcases   Showcase[]
+  items       Item[]
   collections Collection[]
 }
 
-
 // User should own an item 
 model Item {
-  id           Int          @id @default(autoincrement())
-  userId       Int
-  collectionId Int?
-  user         User         @relation(fields: [userId], references: [id])
-  collection   Collection?  @relation(fields: [collectionId], references: [id])
-  Showcase     Showcase?    @relation(fields: [showcaseId], references: [id])
-  showcaseId   Int?
-  productEan   String
-  Product      Product      @relation(fields: [productEan], references: [ean])
+  id              Int         @id @default(autoincrement())
+  userId          Int
+  collectionId    Int?
+  user            User        @relation(fields: [userId], references: [id])
+  collection      Collection? @relation(fields: [collectionId], references: [id])
+  Showcase        Showcase?   @relation(fields: [showcaseId], references: [id])
+  showcaseId      Int?
+  productEan      String
+  Product         Product     @relation(fields: [productEan], references: [ean])
+  imageUrl        String      @default("")
+  condition       String      @default("")
+  userDescription String?
 }
 
 // Showcase is unique per user
@@ -81,10 +83,10 @@ model ProductSeries {
 
 //User doesn't own a Product
 model Product {
-  ean     String          @id
-  upc     String?  
-  isbn    String?
-  data    Json
-  items   Item[]
-  series  ProductSeries[]
+  ean    String          @id
+  upc    String?
+  isbn   String?
+  data   Json
+  items  Item[]
+  series ProductSeries[]
 }
