@@ -114,9 +114,9 @@ const itemController = {
         where: {
           product: {
             OR: [
-              { data: { path: ['title'], string_contains: query } },
-              { data: { path: ['description'], string_contains: query } },
-              { data: { path: ['brand'], string_contains: query } }
+              { data: { path: ['title'], string_contains: query, mode: 'insensitive' } },
+              { data: { path: ['description'], string_contains: query, mode: 'insensitive' } },
+              { data: { path: ['brand'], string_contains: query, mode: 'insensitive' } }
             ]
           }
         },
