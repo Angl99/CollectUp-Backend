@@ -31,7 +31,7 @@ const getItemById = async (req, res) => {
 };
 
 const createItem = async (req, res) => {
-  const { uid, productEan } = req.body;
+  const { uid, productEan, imageUrl, condition, userDescription, collectionId, showcaseId } = req.body;
 
   if (!uid || !productEan) {
     return res.status(400).json({ error: 'Firebase UID and productEan are required' });
@@ -46,7 +46,12 @@ const createItem = async (req, res) => {
     const newItem = await prisma.item.create({
       data: {
         userId: user.id,
-        productEan: productEan.ean,
+        productEan,
+        imageUrl: imageUrl || "",
+        condition: condition || "",
+        userDescription,
+        collectionId: collectionId ? parseInt(collectionId) : null,
+        showcaseId: showcaseId ? parseInt(showcaseId) : null,
       },
     });
     res.status(201).json(newItem);
@@ -59,13 +64,16 @@ const createItem = async (req, res) => {
 
 const updateItemById = async (req, res) => {
   const { id } = req.params;
-  const { name, description } = req.body;
+  const { imageUrl, condition, userDescription, collectionId, showcaseId } = req.body;
   try {
     const updatedItem = await prisma.item.update({
       where: { id: parseInt(id) },
       data: {
-        name,
-        description,
+        imageUrl,
+        condition,
+        userDescription,
+        collectionId: collectionId ? parseInt(collectionId) : null,
+        showcaseId: showcaseId ? parseInt(showcaseId) : null,
       },
     });
     res.json(updatedItem);
