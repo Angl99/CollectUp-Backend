@@ -46,12 +46,10 @@ const createItem = async (req, res) => {
     const newItem = await prisma.item.create({
       data: {
         userId: user.id,
-        productEan,
+        productEan: productEan.ean,
         imageUrl: imageUrl || "",
         condition: condition || "",
         userDescription,
-        collectionId: collectionId ? parseInt(collectionId) : null,
-        showcaseId: showcaseId ? parseInt(showcaseId) : null,
       },
     });
     res.status(201).json(newItem);
@@ -72,8 +70,6 @@ const updateItemById = async (req, res) => {
         imageUrl,
         condition,
         userDescription,
-        collectionId: collectionId ? parseInt(collectionId) : null,
-        showcaseId: showcaseId ? parseInt(showcaseId) : null,
       },
     });
     res.json(updatedItem);
