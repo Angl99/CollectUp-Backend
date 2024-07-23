@@ -164,6 +164,7 @@ describe('Product Controller',  () => {
     response = await request(app).get('/products/search?query=ANOTHER SEARCH');
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
+    console.log('Search response:', response.body); // Add this line for debugging
 
     // Test search by brand (case-insensitive)
     response = await request(app).get('/products/search?query=testbrand');
