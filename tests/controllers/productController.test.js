@@ -126,4 +126,58 @@ describe('Product Controller',  () => {
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('Product and associated ProductSeries entries deleted successfully');
   });
+
+  test('should search for products', async () => {
+    // Create test products
+    await request(app)
+      .post('/products')
+      .send({
+        ean: `1111111111111${Date.now()}`,
+        upc: '111111111111',
+        isbn: '1111111111',
+        data: {
+          title: 'Search Test Product 1',
+          description: 'This is a search test product',
+          brand: 'TestBrand'
+        }
+      });
+
+    await request(app)
+      .post('/products')
+      .send({
+        ean: `2222222222222${Date.now()}`,
+        upc: '222222222222',
+        isbn: '2222222222',
+        data: {
+          title: 'Search Test Product 2',
+          description: 'This is another search test product',
+          brand: 'AnotherBrand'
+        }
+      });
+
+    // Test search by title
+    let response = await request(app).get('/products/search?query=Search Test');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+
+    // Test search by description
+    response = await request(app).get('/products/search?query=another search');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+
+    // Test search by brand
+    response = await request(app).get('/products/search?query=TestBrand');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+
+    // Test search with no results
+    response = await request(app).get('/products/search?query=NonexistentProduct');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(0);
+
+    // Test search with empty query
+    response = await request(app).get('/products/search');
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Search query is required');
+  });
 });
