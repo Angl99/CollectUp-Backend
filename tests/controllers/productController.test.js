@@ -35,7 +35,10 @@ describe('Product Controller',  () => {
           title: 'Test Product',
           description: 'This is a test product',
           brand: 'TestBrand'
-        }
+        },
+        searchableTitle: 'test product',
+        searchableDescription: 'this is a test product',
+        searchableBrand: 'testbrand'
       });
 
     expect(response.status).toBe(201);
@@ -58,8 +61,12 @@ describe('Product Controller',  () => {
         isbn: '9876543210',
         data: {
           title: 'Another Test Product',
-          description: 'This is another test product'
-        }
+          description: 'This is another test product',
+          brand: 'AnotherTestBrand'
+        },
+        searchableTitle: 'another test product',
+        searchableDescription: 'this is another test product',
+        searchableBrand: 'anothertestbrand'
       });
 
     const response = await request(app).get('/products');
@@ -77,8 +84,12 @@ describe('Product Controller',  () => {
         isbn: '1234567890',
         data: {
           title: 'Fetch Test Product',
-          description: 'This is a fetch test product'
-        }
+          description: 'This is a fetch test product',
+          brand: 'FetchTestBrand'
+        },
+        searchableTitle: 'fetch test product',
+        searchableDescription: 'this is a fetch test product',
+        searchableBrand: 'fetchtestbrand'
       });
 
     const response = await request(app).get(`/products/${testEan}`);
@@ -96,8 +107,12 @@ describe('Product Controller',  () => {
         isbn: '1234567890',
         data: {
           title: 'Update Test Product',
-          description: 'This is an update test product'
-        }
+          description: 'This is an update test product',
+          brand: 'UpdateTestBrand'
+        },
+        searchableTitle: 'update test product',
+        searchableDescription: 'this is an update test product',
+        searchableBrand: 'updatetestbrand'
       });
 
     const response = await request(app)
@@ -107,8 +122,12 @@ describe('Product Controller',  () => {
         isbn: '0987654321',
         data: {
           title: 'Updated Test Product',
-          description: 'This is an updated test product'
-        }
+          description: 'This is an updated test product',
+          brand: 'UpdatedTestBrand'
+        },
+        searchableTitle: 'updated test product',
+        searchableDescription: 'this is an updated test product',
+        searchableBrand: 'updatedtestbrand'
       });
 
     expect(response.status).toBe(200);
@@ -127,8 +146,12 @@ describe('Product Controller',  () => {
         isbn: '1234567890',
         data: {
           title: 'Delete Test Product',
-          description: 'This is a delete test product'
-        }
+          description: 'This is a delete test product',
+          brand: 'DeleteTestBrand'
+        },
+        searchableTitle: 'delete test product',
+        searchableDescription: 'this is a delete test product',
+        searchableBrand: 'deletetestbrand'
       });
 
     const response = await request(app).delete(`/products/${testEan}`);

@@ -30,7 +30,10 @@ describe('Item Controller', () => {
         ean: `1234567890123${Date.now()}`,
         upc: '123456789012',
         isbn: '1234567890',
-        data: { name: 'Test Product', description: 'This is a test product' },
+        data: { title: 'Test Product', description: 'This is a test product', brand: 'TestBrand' },
+        searchableTitle: 'test product',
+        searchableDescription: 'this is a test product',
+        searchableBrand: 'testbrand'
       },
     });
   });
@@ -134,7 +137,10 @@ describe('Item Controller', () => {
           title: 'Search Test Product 1',
           description: 'This is a search test product',
           brand: 'TestBrand'
-        }
+        },
+        searchableTitle: 'search test product 1',
+        searchableDescription: 'this is a search test product',
+        searchableBrand: 'testbrand'
       }
     });
 
@@ -147,7 +153,10 @@ describe('Item Controller', () => {
           title: 'Search Test Product 2',
           description: 'This is another search test product',
           brand: 'AnotherBrand'
-        }
+        },
+        searchableTitle: 'search test product 2',
+        searchableDescription: 'this is another search test product',
+        searchableBrand: 'anotherbrand'
       }
     });
 
