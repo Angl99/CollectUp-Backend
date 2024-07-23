@@ -166,20 +166,25 @@ describe('Item Controller', () => {
       }
     });
 
-    // Test search by title
-    let response = await request(app).get('/items/search?query=Search Test');
+    // Test search by title (case-insensitive)
+    let response = await request(app).get('/items/search?query=search test');
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(2);
 
-    // Test search by description
-    response = await request(app).get('/items/search?query=another search');
+    // Test search by description (case-insensitive)
+    response = await request(app).get('/items/search?query=ANOTHER SEARCH');
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
 
-    // Test search by brand
-    response = await request(app).get('/items/search?query=TestBrand');
+    // Test search by brand (case-insensitive)
+    response = await request(app).get('/items/search?query=testbrand');
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
+
+    // Test search with mixed case
+    response = await request(app).get('/items/search?query=SeArCh TeSt');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
 
     // Test search with no results
     response = await request(app).get('/items/search?query=NonexistentProduct');
