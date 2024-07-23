@@ -52,8 +52,8 @@ const itemController = {
       // Create a new item in the database
       const newItem = await prisma.item.create({
         data: {
-          userId: user.id,
-          productEan: productEan.ean,
+          user: { connect: { id: user.id } },
+          product: { connect: {ean: productEan} },
           imageUrl: imageUrl || "",
           condition: condition || "",
           userDescription,

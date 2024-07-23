@@ -34,10 +34,10 @@ model Item {
   collectionId    Int?
   user            User        @relation(fields: [userId], references: [id])
   collection      Collection? @relation(fields: [collectionId], references: [id])
-  Showcase        Showcase?   @relation(fields: [showcaseId], references: [id])
+  showcase        Showcase?   @relation(fields: [showcaseId], references: [id])
   showcaseId      Int?
   productEan      String
-  Product         Product     @relation(fields: [productEan], references: [ean])
+  product         Product     @relation(fields: [productEan], references: [ean])
   imageUrl        String      @default("")
   condition       String      @default("")
   userDescription String?

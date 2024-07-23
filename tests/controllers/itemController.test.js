@@ -47,6 +47,7 @@ describe('Item Controller', () => {
   });
 
   test('should create a new item', async () => {
+    console.log(product);
     const response = await request(app)
       .post('/items')
       .send({

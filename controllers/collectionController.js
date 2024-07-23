@@ -34,11 +34,12 @@ const collectionController = {
   // Create a new collection
   create: async (req, res) => {
     try {
-      const { name, showcaseId } = req.body;
+      const { name, showcaseId, userId } = req.body;
       const newCollection = await prisma.collection.create({
         data: {
           name,
-          showcaseId
+          showcase:  { connect: { id: showcaseId } },
+          user: { connect: { id: userId } },
         },
       });
       res.status(201).json(newCollection);
@@ -69,6 +70,7 @@ const collectionController = {
   updateById: async (req, res) => {
     try {
       const { id } = req.params;
+      console.log(id);
       const { name, showcaseId } = req.body;
       const updatedCollection = await prisma.collection.update({
         where: { id: parseInt(id) },

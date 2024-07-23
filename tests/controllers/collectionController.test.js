@@ -61,7 +61,8 @@ describe('Collection Controller', () => {
     defaultCollection = await prisma.collection.create({
       data: {
         name: 'Default Collection',
-        showcaseId: showcase1.id,
+        showcase: { connect: { id: showcase1.id } },
+        user: { connect: { id: user1.id } },
       },
     });
   });
@@ -83,7 +84,8 @@ describe('Collection Controller', () => {
       .post('/collections')
       .send({
         name: 'Test Collection',
-        showcaseId: showcase1.id
+        showcaseId: showcase1.id,
+        userId: user1.id
       });
 
     expect(response.status).toBe(201);
@@ -107,7 +109,8 @@ describe('Collection Controller', () => {
       .post('/collections')
       .send({
         name: 'Fetch Test Collection',
-        showcaseId: showcase1.id
+        showcaseId: showcase1.id,
+        userId: user1.id
       });
 
     const fetchResponse = await request(app).get(`/collections/${createResponse.body.id}`);
@@ -120,8 +123,10 @@ describe('Collection Controller', () => {
       .post('/collections')
       .send({
         name: 'Update Test Collection',
-        showcaseId: showcase1.id
+        showcaseId: showcase1.id,
+        userId: user1.id
       });
+      console.log(createResponse.body);
 
     const updateResponse = await request(app)
       .put(`/collections/${createResponse.body.id}`)
@@ -139,7 +144,8 @@ describe('Collection Controller', () => {
       .post('/collections')
       .send({
         name: 'Delete Test Collection',
-        showcaseId: showcase1.id
+        showcaseId: showcase1.id,
+        userId: user1.id
       });
 
     const deleteResponse = await request(app).delete(`/collections/${createResponse.body.id}`);
