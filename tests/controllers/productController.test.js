@@ -43,6 +43,9 @@ describe('Product Controller',  () => {
     expect(response.body.searchableTitle).toBe('test product');
     expect(response.body.searchableDescription).toBe('this is a test product');
     expect(response.body.searchableBrand).toBe('testbrand');
+    expect(response.body.searchableTitle).toBe('test product');
+    expect(response.body.searchableDescription).toBe('this is a test product');
+    expect(response.body.searchableBrand).toBe('testbrand');
   });
 
   test('should fetch all products', async () => {
@@ -110,6 +113,8 @@ describe('Product Controller',  () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data.title).toBe('Updated Test Product');
+    expect(response.body.searchableTitle).toBe('updated test product');
+    expect(response.body.searchableDescription).toBe('this is an updated test product');
   });
 
   test('should delete a product', async () => {
@@ -168,7 +173,6 @@ describe('Product Controller',  () => {
     response = await request(app).get('/products/search?query=ANOTHER SEARCH');
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
-    console.log('Search response:', response.body);
 
     // Test search by brand (case-insensitive)
     response = await request(app).get('/products/search?query=testbrand');
@@ -179,6 +183,12 @@ describe('Product Controller',  () => {
     response = await request(app).get('/products/search?query=SeArCh TeSt');
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(2);
+
+    // Verify searchable fields
+    const searchResult = response.body[0];
+    expect(searchResult.searchableTitle.toLowerCase()).toContain('search test');
+    expect(searchResult.searchableDescription.toLowerCase()).toContain('search test');
+    expect(searchResult.searchableBrand.toLowerCase()).toBe('testbrand');
 
     // Test search with no results
     response = await request(app).get('/products/search?query=NonexistentProduct');
