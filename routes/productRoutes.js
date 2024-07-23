@@ -2,14 +2,19 @@ const express = require("express");
 const productRouter = express.Router();
 const productController = require("../controllers/productController");
 
-productRouter.get("/", productController.index);
+// Get all products
+productRouter.get("/", productController.getAllProducts);
 
-productRouter.post("/", productController.create);
+// Create a new product
+productRouter.post("/", productController.createProduct);
 
-productRouter.get("/:code", productController.getByCode);
+// Get a product by code (EAN, ISBN, or UPC)
+productRouter.get("/:code", productController.getProductByCode);
 
-productRouter.put("/:ean", productController.updateByEan);
+// Update a product by EAN
+productRouter.put("/:ean", productController.updateProductByEan);
 
-productRouter.delete("/:ean", productController.deleteByEan);
+// Delete a product by EAN
+productRouter.delete("/:ean", productController.deleteProductByEan);
 
 module.exports = productRouter;

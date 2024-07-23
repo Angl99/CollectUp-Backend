@@ -2,16 +2,22 @@ const express = require("express");
 const userRouter = express.Router();
 const userController = require("../controllers/userController");
 
-userRouter.get("/", userController.index);
+// Get all users
+userRouter.get("/", userController.getAllUsers);
 
-userRouter.post("/", userController.create);
+// Create a new user
+userRouter.post("/", userController.createUser);
 
-userRouter.get("/:id", userController.getById);
+// Get a user by ID
+userRouter.get("/:id", userController.getUserById);
 
-userRouter.put("/:id", userController.updateById);
+// Update a user by ID
+userRouter.put("/:id", userController.updateUserById);
 
-userRouter.delete("/:id", userController.deleteById);
+// Delete a user by ID
+userRouter.delete("/:id", userController.deleteUserById);
 
-userRouter.get("/firebase/:uid", userController.getByFirebaseId)
+// Get a user by Firebase UID
+userRouter.get("/firebase/:uid", userController.getUserByFirebaseId);
 
 module.exports = userRouter;

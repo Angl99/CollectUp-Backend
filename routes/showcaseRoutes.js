@@ -2,18 +2,25 @@ const express = require("express");
 const showcaseRouter = express.Router();
 const showcaseController = require("../controllers/showcaseController");
 
-showcaseRouter.get("/", showcaseController.index);
+// Get all showcases
+showcaseRouter.get("/", showcaseController.getAllShowcases);
 
-showcaseRouter.post("/", showcaseController.create);
+// Create a new showcase
+showcaseRouter.post("/", showcaseController.createShowcase);
 
-showcaseRouter.get("/:id", showcaseController.getById);
+// Get a showcase by ID
+showcaseRouter.get("/:id", showcaseController.getShowcaseById);
 
-showcaseRouter.put("/:id", showcaseController.updateById);
+// Update a showcase by ID
+showcaseRouter.put("/:id", showcaseController.updateShowcaseById);
 
-showcaseRouter.put("/:id/items", showcaseController.addItemToShowcase);
+// Add items or collections to a showcase
+showcaseRouter.put("/:id/items", showcaseController.addItemsToShowcase);
 
-showcaseRouter.delete("/:id", showcaseController.deleteById);
+// Delete a showcase by ID
+showcaseRouter.delete("/:id", showcaseController.deleteShowcaseById);
 
-showcaseRouter.delete("/:id/items", showcaseController.deleteItemById);
+// Remove items or collections from a showcase
+showcaseRouter.delete("/:id/items", showcaseController.removeItemsFromShowcase);
 
 module.exports = showcaseRouter;
