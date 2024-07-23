@@ -37,6 +37,9 @@ describe('Showcase Controller', () => {
         upc: '123456789012',
         isbn: '1234567890',
         data: { name: 'Test Product', description: 'This is a test product' },
+        searchableTitle: 'rew',
+        searchableDescription: 'ejn',
+        searchableBrand: 'rk'
       },
     });
   };

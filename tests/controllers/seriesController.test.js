@@ -19,7 +19,10 @@ describe('Series Controller', () => {
     const testProduct = await prisma.product.create({
       data: {
         ean: 'test-ean-123',
-        data: { name: 'Test Product' }
+        data: { name: 'Test Product' },
+       searchableTitle: 'asasa',
+       searchableDescription: 'am',
+       searchableBrand: 'iu'
       }
     });
 

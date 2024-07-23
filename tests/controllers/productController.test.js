@@ -125,10 +125,11 @@ describe('Product Controller',  () => {
           description: 'This is an updated test product',
           brand: 'UpdatedTestBrand'
         },
-        searchableTitle: 'updated test product',
-        searchableDescription: 'this is an updated test product',
-        searchableBrand: 'updatedtestbrand'
+        // searchableTitle: 'updated test product',
+        // searchableDescription: 'this is an updated test product',
+        // searchableBrand: 'updatedtestbrand'
       });
+      console.log(response.body);
 
     expect(response.status).toBe(200);
     expect(response.body.data.title).toBe('Updated Test Product');
