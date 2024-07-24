@@ -187,4 +187,21 @@ describe('Showcase Controller', () => {
     });
     expect(updatedItem.showcaseId).toBeNull();
   });
+
+  test('should fetch showcases by user UID', async () => {
+    const testUser = await createTestUser();
+    await request(app)
+      .post('/showcases')
+      .send({
+        name: 'Test Showcase 1',
+        uid: testUser.uid,
+      });
+
+    const response = await request(app).get(`/showcases/user/${testUser.uid}`);
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBeTruthy();
+    expect(response.body.length).toBe(1);
+    expect(response.body[0].name).toBe('Test Showcase 1');
+    expect(response.body[0].userId).toBe(testUser.id);
+  });
 });

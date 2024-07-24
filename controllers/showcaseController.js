@@ -171,6 +171,27 @@ const showcaseController = {
       res.status(500).json({ error: 'Failed to remove items/collections from showcase' });
     }
   },
+
+  // Get showcases by user UID
+  getShowcasesByUserUid: async (req, res) => {
+    try {
+      const { uid } = req.params;
+      const user = await getUserByUid(uid);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      const showcases = await prisma.showcase.findMany({
+        where: { userId: user.id },
+        include: { items: true, collections: true },
+      });
+
+      res.json(showcases);
+    } catch (error) {
+      console.error('Error fetching showcases by user UID:', error);
+      res.status(500).json({ error: 'Failed to fetch showcases' });
+    }
+  },
 };
 
 module.exports = showcaseController;
