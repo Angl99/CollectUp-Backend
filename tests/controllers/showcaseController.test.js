@@ -126,7 +126,7 @@ describe('Showcase Controller', () => {
       });
 
     const addItemResponse = await request(app)
-      .put(`/showcases/${showcaseResponse.body.id}/items`)
+      .post(`/showcases/${showcaseResponse.body.id}/items`)
       .send([{ type: 'Item', id: itemResponse.body.id }]);
 
     expect(addItemResponse.status).toBe(200);
