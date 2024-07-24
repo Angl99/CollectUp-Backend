@@ -4,11 +4,26 @@ const { getUserByUid } = require('../helpers/userHelper');
 const showcaseController = {
   // Get all showcases
   getAllShowcases: async (req, res) => {
+    const { uid } = req.query
     try {
       // Fetch all showcases with their items and collections
-      const showcases = await prisma.showcase.findMany({
-        include: { items: true, collections: true },
-      });
+      let showcases;
+      if (uid) {
+        const user = await getUserByUid(uid);
+        if (user){
+          showcases = await prisma.showcase.findMany({
+            where: {userId: user.id},
+            include: { items: true, collections: true },
+          });
+        } else {
+          res.status(400).json({error: "firebase id provided did not match any user"})
+        }
+      } else {
+        showcases = await prisma.showcase.findMany({
+          include: { items: true, collections: true },
+        });
+      }
+      
       res.json(showcases);
     } catch (error) {
       console.error('Error fetching showcases:', error);
@@ -53,7 +68,7 @@ const showcaseController = {
       // Find the showcase by its ID, including its items and collections
       const showcase = await prisma.showcase.findUnique({
         where: { id: parseInt(id, 10) },
-        include: { items: true, collections: true },
+        include: { items: {include: {product: true}}, collections: true },
       });
       if (showcase) {
         res.json(showcase);

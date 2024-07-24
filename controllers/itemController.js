@@ -45,6 +45,7 @@ const itemController = {
     try {
       // Get the user by their Firebase UID
       const user = await getUserByUid(uid);
+      console.log(user);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }

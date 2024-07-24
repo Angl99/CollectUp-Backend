@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "node scripts/initTestDb.js; jest",
+    "test": "node scripts/initTestDb.js && jest",
     "test:coverage": "jest --coverage",
     "start": "nodemon server.js"
   },
