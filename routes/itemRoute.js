@@ -8,6 +8,8 @@ itemRouter.get('/', itemController.getAllItems);
 // Search items
 itemRouter.get('/search', itemController.searchItems);
 
+itemRouter.get('/search-external-api', itemController.searchExternalApi);
+
 // Get an item by ID
 itemRouter.get('/:id', itemController.getItemById);
 
