@@ -8,7 +8,9 @@ const itemController = {
   getAllItems: async (req, res) => {
     try {
       // Fetch all items from the database
-      const items = await prisma.item.findMany();
+      const items = await prisma.item.findMany({
+        where: { forSale: true }
+      });
       res.json(items);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -117,6 +119,7 @@ const itemController = {
 
       const items = await prisma.item.findMany({
         where: {
+          forSale: true,
           product: {
             OR: [
               { searchableTitle: { contains: lowercaseQuery } },

@@ -41,6 +41,7 @@ model Item {
   imageUrl        String      @default("")
   condition       String      @default("")
   userDescription String?
+  forSale         Boolean     @default(false)
 }
 
 // Showcase is unique per user
@@ -83,13 +84,13 @@ model ProductSeries {
 
 //User doesn't own a Product
 model Product {
-  ean             String          @id
-  upc             String?
-  isbn            String?
-  data            Json
-  searchableTitle String
+  ean                   String          @id
+  upc                   String?
+  isbn                  String?
+  data                  Json
+  searchableTitle       String
   searchableDescription String
-  searchableBrand String
-  items           Item[]
-  series          ProductSeries[]
+  searchableBrand       String
+  items                 Item[]
+  series                ProductSeries[]
 }
