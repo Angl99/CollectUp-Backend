@@ -89,7 +89,7 @@ const userController = {
   // Update a user by ID
   updateUserById: async (req, res) => {
     const { id } = req.params;
-    const { firstName, lastName, email } = req.body;
+    const { firstName, lastName, email, streetAddress1, streetAddress2, city, state, zipCode, bio } = req.body;
 
     try {
       // Check if the new email is already in use by another user
@@ -109,6 +109,12 @@ const userController = {
           first_name: firstName,
           last_name: lastName,
           email: email,
+          streetAddress1: streetAddress1,
+          streetAddress2: streetAddress2,
+          city: city,
+          state: state,
+          zipCode: zipCode,
+          bio: bio,
         },
       });
 
