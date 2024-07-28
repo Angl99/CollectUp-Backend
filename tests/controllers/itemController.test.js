@@ -61,6 +61,8 @@ describe('Item Controller', () => {
     expect(response.status).toBe(201);
     expect(response.body.userId).toBe(user.id);
     expect(response.body.productEan).toBe(product.ean);
+    expect(response.body.created_at).toBeDefined();
+    expect(new Date(response.body.created_at)).toBeInstanceOf(Date);
   });
 
   test('should fetch all items', async () => {

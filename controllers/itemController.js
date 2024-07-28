@@ -62,6 +62,7 @@ const itemController = {
           imageUrl: imageUrl || "",
           condition: condition || "",
           userDescription,
+          created_at: new Date(), // Add this line to set the created_at field
         },
       });
       res.status(201).json(newItem);
