@@ -16,21 +16,21 @@ datasource db {
 // Add brand table
 
 model User {
-  id          Int          @id @default(autoincrement())
-  uid         String       @unique
-  first_name  String
-  last_name   String
-  created_at  DateTime     @default(now())
-  email       String       @unique
+  id              Int          @id @default(autoincrement())
+  uid             String       @unique
+  first_name      String
+  last_name       String
+  created_at      DateTime     @default(now())
+  email           String       @unique
   streetAddress1  String?
   streetAddress2  String?
-  city  String?
-  state String?
-  zipCode String?
-  bio String?
-  showcases   Showcase[]
-  items       Item[]
-  collections Collection[]
+  city            String?
+  state           String?
+  zipCode         String?
+  bio             String?
+  showcases       Showcase[]
+  items           Item[]
+  collections     Collection[]
 }
 
 // User should own an item 
