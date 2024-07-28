@@ -103,6 +103,7 @@ const showcaseController = {
     try {
       const { id } = req.params;
       const items = req.body;
+      console.log(id, items);
 
       const showcaseId = parseInt(id, 10);
 
