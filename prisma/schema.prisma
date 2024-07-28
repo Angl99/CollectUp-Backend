@@ -16,37 +16,36 @@ datasource db {
 // Add brand table
 
 model User {
-  id              Int          @id @default(autoincrement())
-  uid             String       @unique
-  first_name      String
-  last_name       String
-  created_at      DateTime     @default(now())
-  email           String       @unique
-  streetAddress1  String?
-  streetAddress2  String?
-  city            String?
-  state           String?
-  zipCode         String?
-  bio             String?
-  showcases       Showcase[]
-  items           Item[]
-  collections     Collection[]
+  id             Int          @id @default(autoincrement())
+  uid            String       @unique
+  first_name     String
+  last_name      String
+  created_at     DateTime     @default(now())
+  email          String       @unique
+  streetAddress1 String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  zipCode        String?
+  bio            String?
+  showcases      Showcase[]
+  items          Item[]
 }
 
 // User should own an item 
 model Item {
-  id              Int         @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   userId          Int
-  user            User        @relation(fields: [userId], references: [id])
-  showcase        Showcase?   @relation(fields: [showcaseId], references: [id])
+  user            User      @relation(fields: [userId], references: [id])
+  showcase        Showcase? @relation(fields: [showcaseId], references: [id])
   showcaseId      Int?
   productEan      String
-  product         Product     @relation(fields: [productEan], references: [ean])
-  created_at      DateTime     @default(now())
-  imageUrl        String      @default("")
-  condition       String      @default("")
+  product         Product   @relation(fields: [productEan], references: [ean])
+  created_at      DateTime  @default(now())
+  imageUrl        String    @default("")
+  condition       String    @default("")
   userDescription String?
-  forSale         Boolean     @default(false)
+  forSale         Boolean   @default(false)
 }
 
 // Showcase is unique per user
@@ -54,7 +53,6 @@ model Showcase {
   id          Int          @id @default(autoincrement())
   name        String
   userId      Int          @unique
-  collections Collection[]
   items       Item[]
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
