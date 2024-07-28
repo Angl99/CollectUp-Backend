@@ -21,7 +21,7 @@ showcaseRouter.post("/:id/items", showcaseController.addItemsToShowcase);
 showcaseRouter.delete("/:id", showcaseController.deleteShowcaseById);
 
 // Remove items or collections from a showcase
-showcaseRouter.delete("/:id/items", showcaseController.removeItemsFromShowcase);
+showcaseRouter.put("/:id/items", showcaseController.removeItemsFromShowcase);
 
 // Get showcases by user UID
 showcaseRouter.get('/user/:uid', showcaseController.getShowcasesByUserUid);

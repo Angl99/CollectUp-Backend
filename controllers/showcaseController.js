@@ -13,14 +13,14 @@ const showcaseController = {
         if (user){
           showcases = await prisma.showcase.findMany({
             where: {userId: user.id},
-            include: { items: true, collections: true },
+            include: { items: true },
           });
         } else {
           res.status(400).json({error: "firebase id provided did not match any user"})
         }
       } else {
         showcases = await prisma.showcase.findMany({
-          include: { items: true, collections: true },
+          include: { items: true },
         });
       }
       
@@ -68,7 +68,7 @@ const showcaseController = {
       // Find the showcase by its ID, including its items and collections
       const showcase = await prisma.showcase.findUnique({
         where: { id: parseInt(id, 10) },
-        include: { items: {include: {product: true}}, collections: true },
+        include: { items: {include: {product: true}}},
       });
       if (showcase) {
         res.json(showcase);
@@ -127,7 +127,7 @@ const showcaseController = {
       // Fetch the updated showcase
       const updatedShowcase = await prisma.showcase.findUnique({
         where: { id: showcaseId },
-        include: { items: true, collections: true },
+        include: { items: true },
       });
 
       res.json(updatedShowcase);
@@ -157,28 +157,37 @@ const showcaseController = {
     try {
       const { id } = req.params;
       const items = req.body;
+      console.log('Removing items from showcase');
+
+      console.log(id, items);
 
       // Start a transaction to ensure all operations are performed or none
-      await prisma.$transaction(async (prisma) => {
+      if (!Array.isArray(items)) {
+        return res.status(400).json({ error: 'Invalid items format. Expected an array.' });
+      }
+
+      await prisma.$transaction(async (p) => {
         for (const item of items) {
+          console.log(item);
           if (item.type === 'Item') {
-            await prisma.item.update({
+            await p.item.update({
               where: { id: parseInt(item.id, 10) },
-              data: { showcaseId: null },
+              data: { showcase: { disconnect: { id: parseInt(id) } } },
             });
           } else if (item.type === 'Collection') {
-            await prisma.collection.update({
+            await p.collection.update({
               where: { id: parseInt(item.id, 10) },
               data: { showcaseId: null },
             });
+          } else {
+            throw new Error('Invalid item type');
           }
         }
       });
 
-      // Fetch the updated showcase
       const updatedShowcase = await prisma.showcase.findUnique({
         where: { id: parseInt(id, 10) },
-        include: { items: true, collections: true },
+        include: { items: true },
       });
 
       res.json(updatedShowcase);
@@ -199,7 +208,7 @@ const showcaseController = {
 
       const showcases = await prisma.showcase.findMany({
         where: { userId: user.id },
-        include: { items: true, collections: true },
+        include: { items: true },
       });
 
       res.json(showcases);
