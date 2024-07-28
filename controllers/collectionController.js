@@ -31,6 +31,16 @@ const collectionController = {
   addProduct: async (req, res) => {
     try {
       const { collectionId, productEan } = req.body;
+
+      // Check if the product exists
+      const product = await prisma.product.findUnique({
+        where: { ean: productEan }
+      });
+
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+
       const updatedCollection = await prisma.collection.update({
         where: { id: parseInt(collectionId) },
         data: {
