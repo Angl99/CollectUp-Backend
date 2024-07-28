@@ -16,39 +16,36 @@ datasource db {
 // Add brand table
 
 model User {
-  id              Int          @id @default(autoincrement())
-  uid             String       @unique
-  first_name      String
-  last_name       String
-  created_at      DateTime     @default(now())
-  email           String       @unique
-  streetAddress1  String?
-  streetAddress2  String?
-  city            String?
-  state           String?
-  zipCode         String?
-  bio             String?
-  showcases       Showcase[]
-  items           Item[]
-  collections     Collection[]
+  id             Int          @id @default(autoincrement())
+  uid            String       @unique
+  first_name     String
+  last_name      String
+  created_at     DateTime     @default(now())
+  email          String       @unique
+  streetAddress1 String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  zipCode        String?
+  bio            String?
+  showcases      Showcase[]
+  items          Item[]
 }
 
 // User should own an item 
 model Item {
-  id              Int         @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   userId          Int
-  collectionId    Int?
-  user            User        @relation(fields: [userId], references: [id])
-  collection      Collection? @relation(fields: [collectionId], references: [id])
-  showcase        Showcase?   @relation(fields: [showcaseId], references: [id])
+  user            User      @relation(fields: [userId], references: [id])
+  showcase        Showcase? @relation(fields: [showcaseId], references: [id])
   showcaseId      Int?
   productEan      String
-  product         Product     @relation(fields: [productEan], references: [ean])
-  created_at      DateTime     @default(now())
-  imageUrl        String      @default("")
-  condition       String      @default("")
+  product         Product   @relation(fields: [productEan], references: [ean])
+  created_at      DateTime  @default(now())
+  imageUrl        String    @default("")
+  condition       String    @default("")
   userDescription String?
-  forSale         Boolean     @default(false)
+  forSale         Boolean   @default(false)
 }
 
 // Showcase is unique per user
@@ -56,20 +53,25 @@ model Showcase {
   id          Int          @id @default(autoincrement())
   name        String
   userId      Int          @unique
-  collections Collection[]
   items       Item[]
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// collections are only related to other items (eg. All demon slayer funko pop figues in a single collection)
+// collections are related to products (eg. All demon slayer funko pop figures in a single collection)
 model Collection {
-  id         Int       @id @default(autoincrement())
+  id         Int                 @id @default(autoincrement())
   name       String
-  items      Item[]
-  showcase   Showcase? @relation(fields: [showcaseId], references: [id])
-  showcaseId Int?
-  userId     Int
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products   CollectionProduct[]
+}
+
+// Join table for many-to-many relationship between Collection and Product
+model CollectionProduct {
+  collectionId Int
+  productEan   String
+  collection   Collection @relation(fields: [collectionId], references: [id])
+  product      Product    @relation(fields: [productEan], references: [ean])
+
+  @@id([collectionId, productEan])
 }
 
 // Series data pertains to particular products (eg. Berserk, DemonSlayer, Naruto)
@@ -91,7 +93,7 @@ model ProductSeries {
 
 //User doesn't own a Product
 model Product {
-  ean                   String          @id
+  ean                   String              @id
   upc                   String?
   isbn                  String?
   data                  Json
@@ -100,4 +102,5 @@ model Product {
   searchableBrand       String
   items                 Item[]
   series                ProductSeries[]
+  collections           CollectionProduct[]
 }
