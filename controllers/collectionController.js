@@ -4,30 +4,12 @@ const collectionController = {
   // Get all collections
   index: async (req, res) => {
     try {
-      const collections = await prisma.collection.findMany();
+      const collections = await prisma.collection.findMany({
+        include: { products: { include: { product: true } } }
+      });
       res.json(collections);
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch collections' });
-    }
-  },
-
-  // Add an item to a collection
-  addItem: async (req, res) => {
-    try {
-      const { collectionId, itemId } = req.body;
-      const updatedCollection = await prisma.collection.update({
-        where: { id: parseInt(collectionId) },
-        data: {
-          items: {
-            connect: { id: parseInt(itemId) }
-          }
-        },
-        include: { items: true }
-      });
-      res.json(updatedCollection);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Failed to add item to collection' });
     }
   },
 
@@ -38,8 +20,8 @@ const collectionController = {
       const newCollection = await prisma.collection.create({
         data: {
           name,
-          showcase:  { connect: { id: showcaseId } },
-          user: { connect: { id: userId } },
+          showcase: showcaseId ? { connect: { id: parseInt(showcaseId) } } : undefined,
+          user: { connect: { id: parseInt(userId) } },
         },
       });
       res.status(201).json(newCollection);
@@ -49,12 +31,33 @@ const collectionController = {
     }
   },
 
+  // Add a product to a collection
+  addProduct: async (req, res) => {
+    try {
+      const { collectionId, productEan } = req.body;
+      const updatedCollection = await prisma.collection.update({
+        where: { id: parseInt(collectionId) },
+        data: {
+          products: {
+            create: { productEan }
+          }
+        },
+        include: { products: { include: { product: true } } }
+      });
+      res.json(updatedCollection);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Failed to add product to collection' });
+    }
+  },
+
   // Get a specific collection by ID
   getById: async (req, res) => {
     try {
       const { id } = req.params;
       const collection = await prisma.collection.findUnique({
         where: { id: parseInt(id) },
+        include: { products: { include: { product: true } } }
       });
       if (collection) {
         res.json(collection);
@@ -63,23 +66,6 @@ const collectionController = {
       }
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch collection' });
-    }
-  },
-
-  // Update a collection by ID
-  updateById: async (req, res) => {
-    try {
-      const { id } = req.params;
-      console.log(id);
-      const { name, showcaseId } = req.body;
-      const updatedCollection = await prisma.collection.update({
-        where: { id: parseInt(id) },
-        data: { name, showcaseId },
-      });
-      res.json(updatedCollection);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Failed to update collection' });
     }
   },
 
