@@ -41,19 +41,37 @@ const collectionController = {
         return res.status(404).json({ error: 'Product not found' });
       }
 
-      const updatedCollection = await prisma.collection.update({
-        where: { id: parseInt(collectionId) },
+      // Check if the collection exists
+      const collection = await prisma.collection.findUnique({
+        where: { id: parseInt(collectionId) }
+      });
+
+      if (!collection) {
+        return res.status(404).json({ error: 'Collection not found' });
+      }
+
+      // Create the connection using CollectionProduct model
+      const collectionProduct = await prisma.collectionProduct.create({
         data: {
-          products: {
-            create: { productEan }
-          }
-        },
+          collection: { connect: { id: parseInt(collectionId) } },
+          product: { connect: { ean: productEan } }
+        }
+      });
+
+      // Fetch the updated collection with products
+      const updatedCollection = await prisma.collection.findUnique({
+        where: { id: parseInt(collectionId) },
         include: { products: { include: { product: true } } }
       });
+
       res.json(updatedCollection);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ error: 'Failed to add product to collection' });
+      if (error.code === 'P2002') {
+        res.status(400).json({ error: 'Product already exists in this collection' });
+      } else {
+        res.status(500).json({ error: 'Failed to add product to collection' });
+      }
     }
   },
 
