@@ -16,13 +16,9 @@ const collectionController = {
   // Create a new collection
   create: async (req, res) => {
     try {
-      const { name, showcaseId, userId } = req.body;
+      const { name } = req.body;
       const newCollection = await prisma.collection.create({
-        data: {
-          name,
-          showcase: showcaseId ? { connect: { id: parseInt(showcaseId) } } : undefined,
-          user: { connect: { id: parseInt(userId) } },
-        },
+        data: { name },
       });
       res.status(201).json(newCollection);
     } catch (error) {

@@ -63,10 +63,6 @@ model Showcase {
 model Collection {
   id         Int                 @id @default(autoincrement())
   name       String
-  showcase   Showcase?           @relation(fields: [showcaseId], references: [id])
-  showcaseId Int?
-  userId     Int
-  user       User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   products   CollectionProduct[]
 }
 
