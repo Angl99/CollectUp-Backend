@@ -27,14 +27,14 @@ const userController = {
           last_name: lastName,
           email: email,
           uid: uid,
-          showcases: {
+          showcase: {
             create: {
               name: `${firstName}'s Showcase`
             }
           }
         },
         include: {
-          showcases: true
+          showcase: true
         }
       });
       res.status(201).json(newUser);
