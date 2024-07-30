@@ -152,6 +152,26 @@ const showcaseController = {
     }
   },
 
+  updateItemInShowcase: async (req, res) => {
+    const { id: showcaseId, itemId } = req.params;
+    const { imageUrl, condition, userDescription, forSale } = req.body;
+    try {
+      const updatedItem = await prisma.item.update({
+        where: { id: parseInt(itemId) },
+        data: {
+          imageUrl,
+          condition,
+          userDescription,
+          forSale
+        },
+      });
+      res.json(updatedItem);
+    } catch (error) {
+      console.error('Error updating item:', error);
+      res.status(500).json({ error: 'Failed to update item' });
+    }
+  },
+
   // Remove items or collections from a showcase
   removeItemsFromShowcase: async (req, res) => {
     try {
