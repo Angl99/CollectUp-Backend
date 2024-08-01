@@ -16,12 +16,12 @@ datasource db {
 // Add brand table
 
 model User {
-  id             Int          @id @default(autoincrement())
-  uid            String       @unique
+  id             Int        @id @default(autoincrement())
+  uid            String?     @unique
   first_name     String
   last_name      String
-  created_at     DateTime     @default(now())
-  email          String       @unique
+  created_at     DateTime   @default(now())
+  email          String     @unique
   streetAddress1 String?
   streetAddress2 String?
   city           String?
@@ -50,18 +50,18 @@ model Item {
 
 // Showcase is unique per user
 model Showcase {
-  id          Int          @id @default(autoincrement())
-  name        String
-  userId      Int          @unique
-  items       Item[]
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     Int    @id @default(autoincrement())
+  name   String
+  userId Int    @unique
+  items  Item[]
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // collections are related to products (eg. All demon slayer funko pop figures in a single collection)
 model Collection {
-  id         Int                 @id @default(autoincrement())
-  name       String
-  products   CollectionProduct[]
+  id       Int                 @id @default(autoincrement())
+  name     String
+  products CollectionProduct[]
 }
 
 // Join table for many-to-many relationship between Collection and Product
