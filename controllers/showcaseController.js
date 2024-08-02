@@ -137,6 +137,11 @@ const showcaseController = {
     }
   },
 
+  // updateItemInShowcase: async (req, res) => {
+  //   const { id } = req.params;
+  //   const { }
+  // },
+
   // Delete a showcase by ID
   deleteShowcaseById: async (req, res) => {
     try {
