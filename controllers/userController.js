@@ -27,14 +27,14 @@ const userController = {
           last_name: lastName,
           email: email,
           uid: uid,
-          showcase: {
+          showcases: {
             create: {
               name: `${firstName}'s Showcase`
             }
           }
         },
         include: {
-          showcase: true
+          showcases: true
         }
       });
       res.status(201).json(newUser);
@@ -89,7 +89,7 @@ const userController = {
   // Update a user by ID
   updateUserById: async (req, res) => {
     const { id } = req.params;
-    const { firstName, lastName, email, streetAddress1, streetAddress2, city, state, zipCode, bio } = req.body;
+    const { firstName, lastName, email, streetAddress1, streetAddress2, city, state, zipCode, bio, uid } = req.body;
 
     try {
       // Check if the new email is already in use by another user
@@ -115,6 +115,7 @@ const userController = {
           state: state,
           zipCode: zipCode,
           bio: bio,
+          uid: uid
         },
       });
 
