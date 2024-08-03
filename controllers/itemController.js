@@ -75,7 +75,7 @@ const itemController = {
   // Update an item by ID
   updateItemById: async (req, res) => {
     const { id } = req.params;
-    const { imageUrl, condition, userDescription, forSale } = req.body;
+    const { imageUrl, condition, userDescription, forSale, price } = req.body;
     try {
       // Update the item in the database
       const updatedItem = await prisma.item.update({
@@ -84,10 +84,17 @@ const itemController = {
           imageUrl,
           condition,
           userDescription,
-          forSale,
+          forSale: forSale === "yes" ? true : false,
+          price: parseFloat(price),
         },
       });
-      res.json(updatedItem);
+      const itemwithProduct = await prisma.item.findUnique({
+        where: { id: parseInt(id) },
+        include: {
+          product: true
+        }
+      })
+      res.json(itemwithProduct);
     } catch (error) {
       console.error('Error updating item:', error);
       res.status(500).json({ error: 'Failed to update item' });
