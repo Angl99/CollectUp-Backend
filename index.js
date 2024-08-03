@@ -14,6 +14,7 @@ const showcaseRouter = require('./routes/showcaseRoutes');
 const collectionRouter = require('./routes/collectionRoutes');
 const seriesRouter = require('./routes/seriesRoutes');
 const productRouter = require('./routes/productRoutes');
+const listingRouter = require('./routes/listingRoutes'); 
 const searchExternalApiRoute = require('./helpers/itemHelper');
 
 
@@ -23,6 +24,7 @@ app.use('/showcases', showcaseRouter);
 app.use('/collections', collectionRouter);
 app.use('/series', seriesRouter);
 app.use('/products', productRouter);
+app.use('/listings', listingRouter); 
 app.use('/api', searchExternalApiRoute);
 
 module.exports = app;
