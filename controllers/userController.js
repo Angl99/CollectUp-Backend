@@ -15,7 +15,7 @@ const userController = {
 
   // Create a new user
   createUser: async (req, res) => {
-    const { firstName, lastName, email, uid } = req.body;
+    const { firstName, lastName, email } = req.body;
     const created_at = new Date().toISOString();
 
     try {
@@ -26,7 +26,6 @@ const userController = {
           first_name: firstName,
           last_name: lastName,
           email: email,
-          uid: uid,
           showcases: {
             create: {
               name: `${firstName}'s Showcase`
