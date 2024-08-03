@@ -9,7 +9,10 @@ const itemController = {
     try {
       // Fetch all items from the database
       const items = await prisma.item.findMany({
-        where: { forSale: true }
+        where: { forSale: true },
+        include: { 
+          product: true,
+        }
       });
       res.json(items);
     } catch (error) {
