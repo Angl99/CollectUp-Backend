@@ -75,7 +75,7 @@ const itemController = {
   // Update an item by ID
   updateItemById: async (req, res) => {
     const { id } = req.params;
-    const { imageUrl, condition, userDescription } = req.body;
+    const { imageUrl, condition, userDescription, forSale } = req.body;
     try {
       // Update the item in the database
       const updatedItem = await prisma.item.update({
@@ -84,6 +84,7 @@ const itemController = {
           imageUrl,
           condition,
           userDescription,
+          forSale,
         },
       });
       res.json(updatedItem);
