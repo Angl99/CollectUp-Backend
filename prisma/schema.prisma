@@ -46,6 +46,7 @@ model Item {
   condition       String    @default("")
   userDescription String?
   forSale         Boolean   @default(false)
+  price           Float?      
 }
 
 // Showcase is unique per user
