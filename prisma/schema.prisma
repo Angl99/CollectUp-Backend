@@ -30,6 +30,7 @@ model User {
   bio            String?
   showcases      Showcase[]
   items          Item[]
+  listings       Listing[]  // Added back-reference to listings
 }
 
 // User should own an item 
@@ -46,6 +47,7 @@ model Item {
   condition       String    @default("")
   userDescription String?
   forSale         Boolean   @default(false)
+  listings        Listing[] // Added back-reference to listings
 }
 
 // Showcase is unique per user
@@ -55,6 +57,7 @@ model Showcase {
   userId Int    @unique
   items  Item[]
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listings  Listing[] // Added back-reference to listings
 }
 
 // collections are related to products (eg. All demon slayer funko pop figures in a single collection)
@@ -103,4 +106,24 @@ model Product {
   items                 Item[]
   series                ProductSeries[]
   collections           CollectionProduct[]
+}
+
+//Market Place is where the user will be pushing their items up for sale hence creating a listing 
+model Listing {
+  id              Int         @id @default(autoincrement())
+  itemId          Int
+  userId          Int
+  showcaseId      Int?
+  price           Float
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  status          String      @default("active") // e.g., active, sold, cancelled
+
+  item            Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  showcase        Showcase?   @relation(fields: [showcaseId], references: [id])
+
+  @@index([itemId])
+  @@index([userId])
+  @@index([showcaseId])
 }
