@@ -10,6 +10,9 @@ itemRouter.get('/search', itemController.searchItems);
 
 itemRouter.get('/search-external-api', itemController.searchExternalApi);
 
+// Fuzzy search items
+itemRouter.get('/fuzzy-search', itemController.fuzzySearchItems);
+
 // Get an item by ID
 itemRouter.get('/:id', itemController.getItemById);
 
