@@ -165,6 +165,48 @@ const itemController = {
       console.error('Error fetching data from external API:', error);
       res.status(500).send('Error fetching data from external API');
     }
+  },
+
+  fuzzySearchItems: async (req, res) => {
+    try {
+      const { query } = req.query;
+      if (!query) {
+        return res.status(400).json({ error: 'Search query is required' });
+      }
+
+      const items = await prisma.$queryRaw`
+        SELECT i.*, p.*,
+               greatest(
+                 similarity(p."searchableTitle", ${query}),
+                 similarity(p."searchableDescription", ${query}),
+                 similarity(p."searchableBrand", ${query})
+               ) AS similarity_score
+        FROM "Item" i
+        JOIN "Product" p ON i."productEan" = p."ean"
+        WHERE i."forSale" = true
+          AND (
+            similarity(p."searchableTitle", ${query}) > 0.3
+            OR similarity(p."searchableDescription", ${query}) > 0.3
+            OR similarity(p."searchableBrand", ${query}) > 0.3
+          )
+        ORDER BY similarity_score DESC
+        LIMIT 20
+      `;
+
+      // Include user information in the response
+      const itemsWithUser = await Promise.all(items.map(async (item) => {
+        const user = await prisma.user.findUnique({
+          where: { id: item.userId },
+          select: { id: true, first_name: true, last_name: true }
+        });
+        return { ...item, user };
+      }));
+
+      res.json(itemsWithUser);
+    } catch (error) {
+      console.error('Error performing fuzzy search:', error);
+      res.status(500).json({ error: 'Failed to perform fuzzy search' });
+    }
   }
 };
 
