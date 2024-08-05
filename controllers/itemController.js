@@ -65,7 +65,7 @@ const itemController = {
           imageUrl: imageUrl || "",
           condition: condition || "",
           userDescription,
-          price: parseFloat(price) || "",
+          price: parseFloat(price) || null,
           forSale: forSale === 'yes',
           created_at: new Date(), // Add this line to set the created_at field
         },
