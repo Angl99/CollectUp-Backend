@@ -43,7 +43,7 @@ const itemController = {
 
   // Create a new item
   createItem: async (req, res) => {
-    const { uid, productEan, imageUrl, condition, userDescription } = req.body;
+    const { uid, productEan, imageUrl, condition, userDescription, price, forSale } = req.body;
 
     if (!uid || !productEan) {
       return res.status(400).json({ error: 'Firebase UID and productEan are required' });
@@ -65,6 +65,8 @@ const itemController = {
           imageUrl: imageUrl || "",
           condition: condition || "",
           userDescription,
+          price: parseFloat(price) || "",
+          forSale: forSale === 'yes',
           created_at: new Date(), // Add this line to set the created_at field
         },
       });
