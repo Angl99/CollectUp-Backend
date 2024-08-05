@@ -19,6 +19,9 @@ const userController = {
     const created_at = new Date().toISOString();
 
     try {
+      await prisma.user.deleteMany({
+        where: {uid: null}
+      });
       // Create a new user with an associated showcase
       const newUser = await prisma.user.create({
         data: {
