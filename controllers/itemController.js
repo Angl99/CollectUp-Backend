@@ -1,7 +1,8 @@
 const { prisma } = require('../helpers/prismaDbHelper');
 const { getUserByUid } = require('../helpers/userHelper');
 const axios = require('axios')
-const EXTERNAL_API_URL = 'https://api.upcitemdb.com/prod/trial/lookup'; 
+const EXTERNAL_API_URL = 'https://api.upcitemdb.com/prod/trial/lookup';
+const EXTERNAL_SEARCH_API_URL = 'https://api.upcitemdb.com/prod/trial/search';
 
 const itemController = {
   // Get all items
@@ -166,6 +167,24 @@ const itemController = {
     } catch (error) {
       console.error('Error fetching data from external API:', error);
       res.status(500).send('Error fetching data from external API');
+    }
+  },
+
+  searchExternalKeyword: async (req, res) => {
+    const { keyword } = req.body;
+    
+    try {
+      const response = await axios.get(EXTERNAL_SEARCH_API_URL, {
+        params: {
+          s: keyword,
+          match_mode: 1,
+          type: 'product'
+        }
+      });
+      res.json(response.data.items);
+    } catch (error) {
+      console.error('Error searching products by keyword:', error);
+      res.status(500).json({ error: 'Failed to search products by keyword' });
     }
   }
 };

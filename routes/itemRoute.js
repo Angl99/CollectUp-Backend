@@ -10,6 +10,9 @@ itemRouter.get('/search', itemController.searchItems);
 
 itemRouter.get('/search-external-api', itemController.searchExternalApi);
 
+// Search external products by keyword
+itemRouter.post('/search-external-keyword', itemController.searchExternalKeyword);
+
 // Get an item by ID
 itemRouter.get('/:id', itemController.getItemById);
 
