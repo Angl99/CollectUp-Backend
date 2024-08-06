@@ -125,6 +125,21 @@ const productController = {
       res.status(500).json({ error: 'Failed to delete product' });
     }
   },
+
+  // Get all items for a specific product EAN
+  getItemsByProductEan: async (req, res) => {
+    try {
+      const { ean } = req.params;
+      const items = await prisma.item.findMany({
+        where: { productEan: ean },
+        include: { user: true },
+      });
+      res.json(items);
+    } catch (error) {
+      console.error('Error fetching items for product:', error);
+      res.status(500).json({ error: 'Failed to fetch items for product' });
+    }
+  },
 };
 
 module.exports = productController;

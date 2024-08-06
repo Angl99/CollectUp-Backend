@@ -20,4 +20,7 @@ productRouter.put("/:ean", productController.updateProductByEan);
 // Delete a product by EAN
 productRouter.delete("/:ean", productController.deleteProductByEan);
 
+// Get all items for a specific product EAN
+productRouter.get("/:ean/items", productController.getItemsByProductEan);
+
 module.exports = productRouter;
