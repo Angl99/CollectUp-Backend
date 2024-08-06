@@ -132,7 +132,16 @@ const productController = {
       const { ean } = req.params;
       const items = await prisma.item.findMany({
         where: { productEan: ean },
-        include: { user: true },
+        include: { 
+          user: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              email: true
+            }
+          }
+        },
       });
       res.json(items);
     } catch (error) {
