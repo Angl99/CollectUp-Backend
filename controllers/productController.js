@@ -141,7 +141,8 @@ const productController = {
               last_name: true,
               email: true
             }
-          }
+          },
+          product: true
         },
       });
       res.json(items);
