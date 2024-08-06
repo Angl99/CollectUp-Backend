@@ -73,7 +73,8 @@ const productController = {
       if (product) {
         res.json(product);
       } else {
-        res.status(404).json({ error: 'Product not found' });
+        // res.status(404).json({ error: 'Product not found' });
+        res.json(null);
       }
     } catch (error) {
       console.error('Error fetching product:', error);
