@@ -4,6 +4,10 @@ const productController = {
   // Get all products
   getAllProducts: async (req, res) => {
     try {
+      // Pseudo code:
+      // 1. Use Prisma to fetch all products from the database
+      // 2. If successful, send the products as a JSON response
+      // 3. If an error occurs, log it and send a 500 status with an error message
       const products = await prisma.product.findMany();
       res.json(products);
     } catch (error) {

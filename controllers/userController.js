@@ -15,6 +15,15 @@ const userController = {
 
   // Create a new user
   createUser: async (req, res) => {
+    // Pseudo code:
+    // 1. Extract firstName, lastName, and email from request body
+    // 2. Create a timestamp for user creation
+    // 3. Delete any existing users with null uid (cleanup)
+    // 4. Create a new user with an associated showcase
+    // 5. If successful, return the new user with 201 status
+    // 6. If email is already in use, return 400 status
+    // 7. For any other error, return 500 status
+
     const { firstName, lastName, email } = req.body;
     const created_at = new Date().toISOString();
 

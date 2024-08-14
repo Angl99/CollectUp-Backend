@@ -34,6 +34,16 @@ const showcaseController = {
   // Create a new showcase
   createShowcase: async (req, res) => {
     try {
+      // Pseudo code:
+      // 1. Extract name and uid from request body
+      // 2. Get user by Firebase UID
+      // 3. If user not found, return 404 error
+      // 4. Check if user already has a showcase
+      // 5. If user has a showcase, return 400 error
+      // 6. If user doesn't have a showcase, create a new one
+      // 7. Return the new showcase with 201 status
+      // 8. If any error occurs, return 500 status with error message
+
       const { name, uid } = req.body;
       // Get the user by their Firebase UID
       const user = await getUserByUid(uid);
